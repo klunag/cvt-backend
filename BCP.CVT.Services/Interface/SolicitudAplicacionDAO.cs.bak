@@ -1,0 +1,180 @@
+﻿using BCP.CVT.DTO;
+using System.Collections.Generic;
+using BCP.PAPP.Common.Custom;
+
+namespace BCP.CVT.Services.Interface
+{
+    public abstract class SolicitudAplicacionDAO : ServiceProvider
+    {
+        public abstract int AddOrEdit(SolicitudDto objRegistro);
+
+        public abstract DataResultAplicacion AgregarRolProducto(int id, string rol, string grupored, string descripcion, string matricula, string nombre);
+
+        public abstract DataResultAplicacion AgregarFuncion(string tribu,int id, string chater, string funcion, string matricula, string nombre);
+
+        public abstract DataResultAplicacion AgregarFuncionProducto(string tribu, string chapter,string funcion, int RolProductoId, string matricula, string nombre);
+
+        public abstract DataResultAplicacion EditarRolProducto(int id, string rol, string grupored, string descripcion, string matricula, string nombre);
+
+        public abstract List<FuncionDTO> GetFuncionExportar(PaginationApplication filter, out int totalRows);
+
+        public abstract List<FuncionDTO> GetFuncionExportar2(PaginationApplication filter, out int totalRows);
+        public abstract List<FuncionDTO> GetFuncionExportar2Squad(PaginationApplication filter, out int totalRows);
+
+        public abstract List<FuncionDTO> GetFuncionExportar2Admin(PaginationApplication filter, out int totalRows);
+        public abstract List<FuncionDTO> GetFuncionExportar2AdminSquad(PaginationApplication filter, out int totalRows);
+
+        public abstract List<FuncionDTO> GetFuncionPersonaExportar(PaginationApplication filter);
+
+        public abstract List<FuncionDTO> GetFuncionPersonaExportarSquad(PaginationApplication filter);
+
+        public abstract List<FuncionDTO> GetFuncionPersonaExportar2(PaginationApplication filter);
+
+        public abstract List<FuncionDTO> GetFuncionPersonaExportar2Admin(PaginationApplication filter);
+
+        public abstract List<FuncionDTO> GetFuncionPersonaExportar2AdminSquad(PaginationApplication filter);
+
+        public abstract DataResultAplicacion EditarFuncion(string tribu,int id, string chapter, string funcion, string matricula, string nombre);
+
+        public abstract DataResultAplicacion EditarFuncionProducto(int FuncionProductoId, int RolProductoId, string matricula, string nombre);
+
+        public abstract bool ExistsRol(string id, int prod, int rolid);
+
+        public abstract bool ExistsRolNuevo(string id, int prod);
+
+        public abstract bool ExistsRolEnFuncion(string chapter, string funcion, int producto, int rol);
+
+        public abstract bool ValidarProductoPerteneciente(int prod, string tribu);
+
+        public abstract bool ExistsFuncionEnRol(string chapter, string funcion, string producto, string rol);
+
+        public abstract bool ExistsGrupoRedNuevo(string id, int prod);
+        public abstract bool ExistsGrupoRed(string id, int prod,int rolid);
+
+        public abstract DataResultAplicacion EditarItem(int ItemId, string NuevoValor, string matricula, string nombre);
+
+        public abstract DataResultAplicacion EliminarRolProducto(int id, string matricula, string nombre);
+
+        public abstract DataResultAplicacion EliminarFuncion(int id, string matricula, string nombre);
+        public abstract DataResultAplicacion EliminarProductoFuncion(int id, string matricula, string nombre);
+
+        public abstract List<FuncionDTO> GetChapter(string chapter,string tribu);
+
+        public abstract List<FuncionDTO> GetTribu(string name);
+
+        public abstract List<FuncionDTO> GetGrupoRed(string name);
+
+        public abstract List<ProductoDTO> GetProd(string name);
+
+        public abstract List<ProductoDTO> GetRol(string name);
+
+        public abstract List<FuncionDTO> GetFuncion(string chapter,string funcion);
+
+
+        public abstract RolesProductoDTO GetRolProductoById(int id);
+
+        public abstract bool GetRolFuncion(int id);
+
+        public abstract FuncionDTO GetFuncionById(int id);
+
+        public abstract FuncionDTO GetFuncionProductoById(int id);
+
+        public abstract FiltersRolesProducto GetRolesProductosCombo(string perfil, string matricula);
+
+        public abstract FiltersRolesProducto GetRolesProductosComboDominio(int dominioId);
+
+        public abstract FiltersRolesProducto GetRolesProductosComboTribus(string tribuid, string perfil, string matricula);
+
+        public abstract FiltersFuncionesProducto GetRolesProductosComboTribusAgregar(string tribuid);
+
+        public abstract FiltersFuncionesProducto GetRolesProductosComboChapterAgregar(string tribuid);
+
+
+        public abstract string GetTribuMatricula(string matricula);
+
+        public abstract string GetTribuNombreMatricula(string matricula);
+
+        public abstract FiltersFuncionesProducto GetFuncionesProductosCombo(string matricula, string perfil, string tribu);
+
+        public abstract FiltersFuncionesProducto GetFuncionesProductosComboConsolidado();
+
+        public abstract FiltersFuncionesProducto GetFuncionesProductosComboTribu();
+
+        public abstract FiltersFuncionesProducto GetFuncionesProductosComboRoles(int id);
+
+        public abstract List<SolicitudDto> GetSolicitudes(PaginacionSolicitud pag, out int totalRows);
+
+        public abstract List<SolicitudDto> GetSolicitudes2(PaginacionSolicitud pag, out int totalRows);
+
+        public abstract List<SolicitudDto> GetSolicitudes3(PaginacionSolicitud pag, out int totalRows);
+        public abstract List<SolicitudDetalleDto> GetSolicitudesDetalle(PaginacionSolicitud pag, out int totalRows);
+        public abstract List<SolicitudDetalleDto> GetSolicitudesDetalleEliminacion(PaginacionSolicitud pag, out int totalRows);
+        public abstract List<SolicitudDetalleDto> GetSolicitudesDetalleData(PaginacionSolicitud pag, out int totalRows);
+
+        public abstract List<BitacoraDto> GetBitacoraDetalle(PaginacionSolicitud pag, out int totalRows);
+
+        public abstract List<RolesProductoDTO> GetProductoRolesDetalleDetalle(PaginacionSolicitud pag, out int totalRows);
+
+        public abstract List<FuncionDTO> GetDetalleFuncionesProductosRoles(PaginacionSolicitud pag, out int totalRows);
+
+        public abstract List<RolesProductoDTO> GetFuncionProductoRolesDetalle(PaginacionSolicitud pag, out int totalRows);
+        public abstract List<SolicitudDto> GetSolicitudesAprobador(PaginacionSolicitud pag, out int totalRows);
+        public abstract void AddArchivo(int solicitud, byte[] archivo, string nombreArchivo);
+
+        public abstract SolicitudDto GetSolicitudById(int Id);
+        public abstract SolicitudDto GetContenidoFileSolicitudById(int Id);
+        public abstract SolicitudDto GetContenidoFileSolicitudEliminacionById(int Id);
+        public abstract SolicitudDto GetContenidoFileBitacoraById(int Id);
+
+        public abstract bool CambiarEstadoSolicitud(int Id, int TipoSolicitudId, int EstadoSolicitudId, string MotivoComentario, string Observacion, string Usuario, int bandejaId);
+        public abstract List<CustomAutocomplete> GetColumnaAplicacionByFiltro(string filtro, string tablaProcedencia, string IdsTipoFlujo = null);
+        public abstract List<CustomAutocomplete> GetColumnaModuloByFiltro(string filtro);
+        public abstract List<CustomAutocomplete> GetModuloByCodigoAPT(string codigoAPT);
+        public abstract List<CustomAutocomplete> GetProveedorDesarrolloByFiltro(string filtro);
+        public abstract string GetUltimoComentarioBySolicitudId(int Id);
+        public abstract int AddOrEditSolicitudComentarios(SolicitudComentariosDTO objRegistro);
+        public abstract List<SolicitudComentariosDTO> GetSolicitudComentarios(PaginacionSolicitud pag, out int totalRows);
+
+        public abstract int AddOrEditSolicitudAprobadores(SolicitudAprobadoresDTO objRegistro);
+        public abstract bool CambiarEstadoSolicitudAprobadores(int Id, int EstadoSolicitudId, int BandejaId, string Observacion, string Usuario);
+        public abstract bool ExisteCambioEstadoSolicitudAprobadores(int id_solicitud, int id_bandeja);
+        public abstract int? GetTipoFlujoByAplicacion(string codigoAPT);
+
+        public abstract bool UpdateAplicacionByBandeja(UpdateAplicacionBandeja objDto);
+        public abstract UpdateAplicacionBandeja GetAplicacionBandejaById(int Id);
+
+        public abstract bool ExisteSolicitudByCodigoAPT(string codigoApt, int idSolicitud);
+
+        public abstract AplicacionSolicitudDto GetAplicacionBySolicitudId(int Id);
+
+        public abstract void AddBitacora(long aplicacion, string usuario, int tipoBitacora, string flujo = null, string comentarios = null, int bandeja = 0, AplicacionDTO objeto = null);
+        public abstract List<BitacoraDto> GetBitacora(PaginacionSolicitud pag, out int totalRows);
+
+        public abstract List<BitacoraDto2> GetBitacora2(PaginacionSolicitud pag, out int totalRows);
+
+        public abstract List<ProductoDTO> GetProductos(PaginacionSolicitud pag, out int totalRows);
+
+        public abstract List<ProductoDTO> GetProductosAdmin(PaginacionSolicitud pag, out int totalRows);
+
+        public abstract List<FuncionDTO> GetFuncionesConsolidado(PaginacionSolicitud pag, out int totalRows);
+
+        public abstract List<FuncionDTO> GetFunciones(PaginacionSolicitud pag, out int totalRows);
+
+        public abstract List<FuncionDTO> GetFuncionesAdmin(PaginacionSolicitud pag, out int totalRows);
+
+        public abstract List<FuncionDTO> GetPersonasFunciones(PaginacionSolicitud pag, out int totalRows);
+
+        public abstract List<RelacionDTO> GetRelacionesAplicacion(PaginacionSolicitud pag, out int totalRows);
+        public abstract List<BitacoraDto> GetBitacoraDetail(PaginacionSolicitud pag, out int totalRows);
+
+        public abstract void RechazarSolicitud(int solicitud, string comentarios, string usuario, string NombreUsuarioAprobacion);
+        public abstract void AprobarSolicitud(int solicitud, string usuario,string NombreUsuarioAprobacion);
+        public abstract void DesestimarSolicitud(int solicitud, string comentarios, string usuario, string NombreUsuarioAprobacion);
+        public abstract List<SolicitudDto> GetSolicitudes2Exportar(PaginacionSolicitud pag, out int totalRows);
+        public abstract List<SolicitudDto> GetSolicitudes3Exportar(PaginacionSolicitud pag, out int totalRows);
+
+        public abstract int RegitrarSolicitudReversionEliminacionApplication(SolicitudDto objRegistro);
+
+        public abstract List<SolicitudDto> GetSolicitudesReversionEliminacion(PaginacionSolicitud pag, out int totalRows);
+    }
+}

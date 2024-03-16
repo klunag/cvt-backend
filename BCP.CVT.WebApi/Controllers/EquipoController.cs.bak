@@ -1,0 +1,964 @@
+﻿using BCP.CVT.DTO;
+using BCP.CVT.Services.Interface;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+using System.Web.Http.Cors;
+using System.Web.Http.Description;
+using BCP.CVT.Cross;
+using BCP.CVT.Services.Exportar;
+using System.Web;
+using BCP.CVT.Services.CargaMasiva;
+using System.Threading.Tasks;
+using BCP.CVT.WebApi.Auth;
+
+namespace BCP.CVT.WebApi.Controllers
+{
+    [RoutePrefix("api/Equipo")]
+    public class EquipoController : BaseController
+    {
+        // POST: api/Equipo/Listado
+        [Route("Listado")]
+        [HttpPost]
+        [Authorize]
+        public IHttpActionResult PostListDominios(Paginacion pag)
+        {
+            var totalRows = 0;
+            var parametro = ServiceManager<ParametroDAO>.Provider.ObtenerParametro(Utilitarios.CODIGO_SUBDOMINIO_SISTEMA_OPERATIVO);
+            var idSubdominio = parametro != null ? int.Parse(parametro.Valor) : 0;
+
+            if (pag.PerfilId == (int)EPerfilBCP.Administrador)
+            {
+                var registros = ServiceManager<EquipoDAO>.Provider.GetEquipos(pag.nombre,pag.IP, pag.so, pag.ambienteIds, pag.tipoIds, idSubdominio, pag.desIds, pag.subsiIds, pag.pageNumber, pag.pageSize, pag.sortName, pag.sortOrder, out totalRows);
+
+                if (registros == null)
+                    return NotFound();
+
+                dynamic reader = new BootstrapTable<EquipoDTO>()
+                {
+                    Total = totalRows,
+                    Rows = registros
+                };
+
+                return Ok(reader);
+            }
+            else
+            {
+                // PENDIENTE POR CONCLUIR
+                var registros = ServiceManager<EquipoDAO>.Provider.GetEquiposConsultor(pag.nombre,pag.IP, pag.so, pag.ambienteIds, pag.tipoIds, idSubdominio, pag.desIds, pag.subsiIds, pag.pageNumber, pag.pageSize, pag.sortName, pag.sortOrder, pag.Matricula, out totalRows);
+
+                if (registros == null)
+                    return NotFound();
+
+                dynamic reader = new BootstrapTable<EquipoDTO>()
+                {
+                    Total = totalRows,
+                    Rows = registros
+                };
+
+                return Ok(reader);
+            }
+        }
+
+        // GET: api/Equipo/ObtenerTipoEquipo
+        [Route("ObtenerTipoEquipo")]
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult GetTipoEquipo()
+        {
+            var listSubdom = ServiceManager<EquipoDAO>.Provider.GetTipoEquipos();
+            if (listSubdom == null)
+                return NotFound();
+
+            return Ok(listSubdom);
+        }
+
+        // GET: api/Equipo/ObtenerAmbiente
+        [Route("ObtenerAmbiente")]
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult GetAmbiente()
+        {
+            var listSubdom = ServiceManager<AmbienteDAO>.Provider.GetAmbiente();
+            if (listSubdom == null)
+                return NotFound();
+
+            return Ok(listSubdom);
+        }
+
+        [Route("GetEquipoByFiltro")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetEquipoByFiltro(string filtro)
+        {
+            HttpResponseMessage response = null;
+            var data = ServiceManager<EquipoDAO>.Provider.GetEquipoByFiltro(filtro, 0);
+            response = Request.CreateResponse(HttpStatusCode.OK, data);
+            return response;
+        }
+
+        [Route("GetEquipoByFiltroAndTipo")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetEquipoByFiltroAndTipo(string filtro, int tipo)
+        {
+            HttpResponseMessage response = null;
+            var data = ServiceManager<EquipoDAO>.Provider.GetEquipoByFiltro(filtro, tipo);
+            response = Request.CreateResponse(HttpStatusCode.OK, data);
+            return response;
+        }
+
+        [Route("GetSOByFiltro")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetSOByFiltro(string filtro)
+        {
+            HttpResponseMessage response = null;
+            var data = ServiceManager<EquipoDAO>.Provider.GetSOTecnologias(filtro);
+            response = Request.CreateResponse(HttpStatusCode.OK, data);
+            return response;
+        }
+
+        [Route("ExisteEquipo")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetExisteEquipo(int Id)
+        {
+            HttpResponseMessage response = null;
+            bool estado = ServiceManager<EquipoDAO>.Provider.ExisteEquipoById(Id);
+            response = Request.CreateResponse(HttpStatusCode.OK, estado);
+            return response;
+        }
+        #region GESTION EQUIPOS
+
+        [Route("AddOrEditEquipoSoftwareBase")]
+        [HttpPost]
+        [Authorize]
+        public HttpResponseMessage PostEquipoSoftwareBase(EquipoSoftwareBaseDTO entidad)
+        {
+            HttpResponseMessage response = null;
+            int entidadId = ServiceManager<EquipoDAO>.Provider.AddOrEditEquipoSoftwareBase(entidad);
+            response = Request.CreateResponse(HttpStatusCode.OK, entidadId);
+
+            return response;
+        }
+
+        [Route("BuscarEBS")]
+        [HttpPost]
+        [Authorize]
+        public IHttpActionResult GetESBSearch(PaginacionEquipo pag)
+        {
+            var totalRows = 0;
+            var registros = ServiceManager<EquipoDAO>.Provider.GetESBSearch(pag, out totalRows);
+
+            if (registros == null)
+                return NotFound();
+
+            dynamic reader = new BootstrapTable<EquipoDTO>()
+            {
+                Total = totalRows,
+                Rows = registros
+            };
+
+            return Ok(reader);
+        }
+
+        // GET: api/Equipo/5
+        [Route("ObtenerEBS/{id:int}")]
+        [ResponseType(typeof(EquipoSoftwareBaseDTO))]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetEquipoSoftwareBaseById(int id)
+        {
+            HttpResponseMessage response = null;
+            var entidad = ServiceManager<EquipoDAO>.Provider.GetEquipoSoftwareBaseById(id);
+            if (entidad == null)
+            {
+                response = Request.CreateErrorResponse(HttpStatusCode.NotFound, "Entidad no encontrada");
+                return response;
+            }
+
+            response = Request.CreateResponse(HttpStatusCode.OK, entidad);
+
+            return response;
+        }
+
+
+        // POST: api/Equipo/ListadoGestionEquipo
+        [Route("ListadoGestionEquipo")]
+        [HttpPost]
+        [Authorize]
+        public IHttpActionResult PostListGestionEquipo(PaginacionEquipo pag)
+        {
+            var totalRows = 0;
+            var registros = ServiceManager<EquipoDAO>.Provider.GetEquipo(pag.nombre, pag.tipoEquipoId, pag.tipoEquipoIds, pag.desId, pag.exCalculoId, pag.flagActivo, pag.subsidiariaId, pag.pageNumber, pag.pageSize, pag.sortName, pag.sortOrder, out totalRows);
+
+            if (registros == null)
+                return NotFound();
+
+            dynamic reader = new BootstrapTable<EquipoDTO>()
+            {
+                Total = totalRows,
+                Rows = registros
+            };
+
+            return Ok(reader);
+        }
+
+        // POST: api/Equipo/ListadoGestionEquipo
+        [Route("ListadoEquipoDesactivados")]
+        [HttpPost]
+        [Authorize]
+        public IHttpActionResult PostListEquipoDesactivados(PaginacionEquipo pag)
+        {
+            var totalRows = 0;
+            var registros = ServiceManager<EquipoDAO>.Provider.GetEquiposDesactivados(pag.nombre, pag.tipoEquipoIds, pag.subsidiariaIds, pag.pageNumber, pag.pageSize, pag.sortName, pag.sortOrder, out totalRows);
+
+            if (registros == null)
+                return NotFound();
+
+            dynamic reader = new BootstrapTable<EquipoDTO>()
+            {
+                Total = totalRows,
+                Rows = registros
+            };
+
+            return Ok(reader);
+        }
+
+        // GET: api/Equipo/5
+        [Route("{id:int}")]
+        [ResponseType(typeof(EquipoDTO))]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetEquipoById(int id)
+        {
+            HttpResponseMessage response = null;
+            var entidad = ServiceManager<EquipoDAO>.Provider.GetEquipoById(id);
+            if (entidad == null)
+            {
+                response = Request.CreateErrorResponse(HttpStatusCode.NotFound, "Entidad no encontrada");
+                return response;
+            }
+
+            response = Request.CreateResponse(HttpStatusCode.OK, entidad);
+
+            return response;
+        }
+
+        [Route("ListarCombos")]
+        [HttpPost]
+        [Authorize]
+        public HttpResponseMessage PostListCombos()
+        {
+            HttpResponseMessage response = null;
+
+            var listAmbiente = ServiceManager<AmbienteDAO>.Provider.GetAmbienteByFiltro(null);
+            var listPCI = ServiceManager<EquipoDAO>.Provider.GetPCIByFiltro(null);
+            var listTipoEquipo = ServiceManager<EquipoDAO>.Provider.GetTipoEquipoByFiltro(null);
+            var listSO = ServiceManager<EquipoDAO>.Provider.GetSOTecnologias(null);
+            var listDominio = ServiceManager<DominioDAO>.Provider.GetAllDominioByFiltro(null);
+            var listDominioRed = ServiceManager<DominioRedDAO>.Provider.GetDominioRedByFiltro(null);
+            var listTipoExclusion = ServiceManager<TipoExclusionDAO>.Provider.GetTipoExclusionByFiltro(null);
+            var listDescubrimiento = Utilitarios.EnumToList<EDescubrimiento>();
+            var listDescubrimientoAnterior = Utilitarios.EnumToList<EDescubrimientoAnterior>();
+            var listEstadoCalculo = Utilitarios.EnumToList<EEstadoCalculo>();
+            var listCaracteristicaEquipo = Utilitarios.EnumToList<ECaracteristicaEquipo>();
+            var lEstadoEquipo = Utilitarios.EnumToList<EEstadoEquipo>();
+            var lFechaCalculo = Utilitarios.EnumToList<FechaCalculoTecnologia>();
+
+            //var lTipoActivo = Utilitarios.EnumToList<ETipoActivoEquipo>();
+            //var lDimension = Utilitarios.EnumToList<EDimensionEquipo>();
+            //var lBackup = Utilitarios.EnumToList<EBackup>();
+            //var lBackupFrecuencia = Utilitarios.EnumToList<EBackupFrecuencia>();
+            //var lCona = Utilitarios.EnumToList<ECONA>();
+            //var lSede = Utilitarios.EnumToList<ESedeEquipo>();
+            //var lIntegracion = Utilitarios.EnumToList<EIntegracionGestorInteligencia>();
+            //var lCriticidad = Utilitarios.EnumToList<ECriticidadEquipo>();
+            //var lCyberSoc = Utilitarios.EnumToList<ECyberSoc>();
+
+            var lTipoActivo = ServiceManager<ParametricasDAO>.Provider.GetParametricasByTabla(Utilitarios.GetEnumDescription2(EEntidadAppliance.TipoActivo), (int)EEntidadParametrica.APPLIANCE);
+            var lDimension = ServiceManager<ParametricasDAO>.Provider.GetParametricasByTabla(Utilitarios.GetEnumDescription2(EEntidadAppliance.Dimension), (int)EEntidadParametrica.APPLIANCE);
+            var lBackup = ServiceManager<ParametricasDAO>.Provider.GetParametricasByTabla(Utilitarios.GetEnumDescription2(EEntidadAppliance.Backup), (int)EEntidadParametrica.APPLIANCE);
+            var lBackupFrecuencia = ServiceManager<ParametricasDAO>.Provider.GetParametricasByTabla(Utilitarios.GetEnumDescription2(EEntidadAppliance.BackupFrecuencia), (int)EEntidadParametrica.APPLIANCE);
+            var lCona = ServiceManager<ParametricasDAO>.Provider.GetParametricasByTabla(Utilitarios.GetEnumDescription2(EEntidadAppliance.CONA), (int)EEntidadParametrica.APPLIANCE);
+            var lSede = ServiceManager<ParametricasDAO>.Provider.GetParametricasByTabla(Utilitarios.GetEnumDescription2(EEntidadAppliance.Sede), (int)EEntidadParametrica.APPLIANCE);
+            var lIntegracion = ServiceManager<ParametricasDAO>.Provider.GetParametricasByTabla(Utilitarios.GetEnumDescription2(EEntidadAppliance.IntegracionGestorInteligencia), (int)EEntidadParametrica.APPLIANCE);
+            var lCriticidad = ServiceManager<ParametricasDAO>.Provider.GetParametricasByTabla(Utilitarios.GetEnumDescription2(EEntidadAppliance.Criticidad), (int)EEntidadParametrica.APPLIANCE);
+            var lCyberSoc = ServiceManager<ParametricasDAO>.Provider.GetParametricasByTabla(Utilitarios.GetEnumDescription2(EEntidadAppliance.CyberSoc), (int)EEntidadParametrica.APPLIANCE);
+
+            var lEstadoIntegracionSIEM = ServiceManager<ParametricasDAO>.Provider.GetParametricasByTabla(Utilitarios.GetEnumDescription2(EEntidadAppliance.EstadoIntegracionSIEM), (int)EEntidadParametrica.APPLIANCE);
+            var lConaAvanzado = ServiceManager<ParametricasDAO>.Provider.GetParametricasByTabla(Utilitarios.GetEnumDescription2(EEntidadAppliance.CONAAvanzado), (int)EEntidadParametrica.APPLIANCE);
+            var lEstadoAppliance = ServiceManager<ParametricasDAO>.Provider.GetParametricasByTabla(Utilitarios.GetEnumDescription2(EEntidadAppliance.EstadoAppliance), (int)EEntidadParametrica.APPLIANCE);
+
+            var parametro = ServiceManager<ParametroDAO>.Provider.ObtenerParametro("ACTIVAR_OTROS_EQUIPOS");
+            var valor = parametro != null ? bool.Parse(parametro.Valor) : false;
+
+            var dataRpta = new
+            {
+                Ambiente = listAmbiente,
+                TipoEquipo = listTipoEquipo,
+                Descubrimiento = listDescubrimiento.Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList(),
+                DescubrimientoAnterior = listDescubrimientoAnterior.Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList(),
+                SO = listSO,
+                EstadoCalculo = listEstadoCalculo.Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList(),
+                DominioRed = listDominioRed,
+                TipoExclusion = listTipoExclusion,
+                CaracteristicaEquipo = listCaracteristicaEquipo.Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList(),
+                EstadoEquipo = lEstadoEquipo.Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList(),
+                Dominio = listDominio,
+                FechaCalculo = lFechaCalculo.Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList(),
+                ParametroEquipo = valor,
+                CyberSoc = lCyberSoc, //.Select(x => Utilitarios.GetEnumDescription2(x)).ToArray(),
+                TipoActivo = lTipoActivo,
+                Dimension = lDimension,
+                Backup = lBackup,
+                BackupFrecuencia = lBackupFrecuencia,
+                Cona = lCona, //.Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList(),
+                Sede = lSede, //.Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList(),
+                IntegracionGestor = lIntegracion, //.Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList(),
+                Criticidad = lCriticidad, //.Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList()
+                EstadoIntegracionSIEM = lEstadoIntegracionSIEM,
+                ConaAvanzado = lConaAvanzado,
+                EstadoAppliance = lEstadoAppliance,
+                TipoPCI= listPCI
+            };
+
+            response = Request.CreateResponse(HttpStatusCode.OK, dataRpta);
+            return response;
+        }
+
+        // POST: api/Equipo
+        [Route("")]
+        [HttpPost]
+        [ResponseType(typeof(EquipoDTO))]
+        [Authorize]
+        public HttpResponseMessage PostEquipo(EquipoDTO entidad)
+        {
+            HttpResponseMessage response = null;
+
+            if (!ModelState.IsValid)
+                return response = Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+
+            int entidadId = ServiceManager<EquipoDAO>.Provider.AddOrEditEquipo(entidad);
+
+            if (entidadId == 0)
+                return response = Request.CreateErrorResponse(HttpStatusCode.NotFound, "Entidad no encontrada");
+
+            response = Request.CreateResponse(HttpStatusCode.OK, entidadId);
+
+            return response;
+        }
+
+        // POST: api/Equipo/AsignarSO
+        [Route("AsignarSO")]
+        [HttpPost]
+        [ResponseType(typeof(EquipoTecnologiaDTO))]
+        [Authorize]
+        public HttpResponseMessage PostAsignarSO(EquipoTecnologiaDTO entidad)
+        {
+            HttpResponseMessage response = null;
+
+            if (!ModelState.IsValid)
+                return response = Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+
+            int entidadId = ServiceManager<EquipoDAO>.Provider.AsignarSOTecnologias(entidad);
+
+            if (entidadId == 0)
+                return response = Request.CreateErrorResponse(HttpStatusCode.NotFound, "Entidad no encontrada");
+
+            response = Request.CreateResponse(HttpStatusCode.OK, entidadId);
+
+            return response;
+        }
+
+        // GET: api/Equipo/CambiarEstado/5
+        [Route("ObtenerSOById")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetSOById(int Id)
+        {
+            HttpResponseMessage response = null;
+            var entidad = ServiceManager<EquipoDAO>.Provider.GetSOById(Id);
+
+            response = Request.CreateResponse(HttpStatusCode.OK, entidad);
+            return response;
+        }
+
+        [Route("GetEquipoDetalle/{id:int}")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetEquipoDetalle(int id)
+        {
+            HttpResponseMessage response = null;
+
+
+            var dataRpta = ServiceManager<EquipoDAO>.Provider.GetEquipoDetalleById(id);
+            if (dataRpta != null)
+            {
+                dataRpta.Storage = ServiceManager<StorageDAO>.Provider.GetStorageEquipo(id);
+
+                if (dataRpta.AmbienteId != 0)
+                    dataRpta.AmbienteDTO = ServiceManager<AmbienteDAO>.Provider.GetAmbienteById(dataRpta.AmbienteId.Value);
+
+                var rptaDetalle = ServiceManager<EquipoDAO>.Provider.GetEquipoDetalleAdicional(dataRpta.Nombre);
+                if (rptaDetalle != null)
+                {
+                    dataRpta.MemoriaRam = rptaDetalle.MemoriaRam;
+                    dataRpta.Procesadores = rptaDetalle.Procesadores;
+                    dataRpta.Discos = rptaDetalle.Discos;
+                }
+            }
+
+            response = Request.CreateResponse(HttpStatusCode.OK, dataRpta);
+            return response;
+        }
+
+        [Route("GetEquipoDetalleEscaneadasVsRegistradas")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetEquipoDetalleEscaneadasVsRegistradas(int equipoId, DateTime fecha)
+        {
+            HttpResponseMessage response = null;
+
+            var dataPie = ServiceManager<EquipoDAO>.Provider.GetEquipoDetalleEscaneadasVsRegistradas(equipoId, fecha);
+
+            response = Request.CreateResponse(HttpStatusCode.OK, dataPie);
+            return response;
+        }
+
+        [Route("GetTecnologiaByEquipoId")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetTecnologiaByEquipoId(int equipoId, string fecha, int pageNumber, int pageSize, string sortName, string sortOrder)
+        {
+            HttpResponseMessage response = null;
+            int totalRows = 0;
+
+            var paramProyeccion1 = ServiceManager<ParametroDAO>.Provider.ObtenerParametro("NRO_MESES_PROYECCIONES");
+            var proyeccionMeses1 = paramProyeccion1 != null ? paramProyeccion1.Valor : "12";
+            var paramProyeccion2 = ServiceManager<ParametroDAO>.Provider.ObtenerParametro("NRO_MESES_PROYECCIONES_2");
+            var proyeccionMeses2 = paramProyeccion2 != null ? paramProyeccion2.Valor : "24";
+
+            var dataRpta = new DetalleEquipoDataTecnologias();
+            dataRpta.Proyeccion1Meses = proyeccionMeses1;
+            dataRpta.Proyeccion2Meses = proyeccionMeses2;
+
+            var registros = ServiceManager<TecnologiaDAO>.Provider.GetTecnologiaByEquipoId(equipoId, fecha, pageNumber, pageSize, sortName, sortOrder, out totalRows);
+            if (registros != null)
+            {
+                dataRpta.Tecnologias = new BootstrapTable<TecnologiaDTO>() { Rows = registros, Total = totalRows };
+
+                //var dataRpta = new { Total = totalRows, Rows = registros };
+                response = Request.CreateResponse(HttpStatusCode.OK, dataRpta);
+            }
+            return response;
+        }
+
+        #endregion
+        [Route("GestionEquipos/Exportar")]
+        [HttpGet]
+        public HttpResponseMessage GetExportarGestionEquipos(string filtro, int tipoEquipoId, int desId, int exCalculoId, int? flagActivo, int? subsidiariaId, string sortName, string sortOrder, string tipoEquipoIds)
+        {
+            string nomArchivo = "";
+            var idsTipoEquipo = new List<int>();
+
+            if (!string.IsNullOrEmpty(tipoEquipoIds))
+            {
+                var arr_tipoEquipoIds = tipoEquipoIds.Split(';');
+                idsTipoEquipo = arr_tipoEquipoIds.Select(x => int.Parse(x)).ToList();
+            }
+
+            var data = new ExportarData().ExportarGestionEquipos(filtro, tipoEquipoId, idsTipoEquipo, desId, exCalculoId, flagActivo, subsidiariaId, sortName, sortOrder, (int)EPerfilBCP.Administrador, string.Empty);
+            nomArchivo = flagActivo != null ? "ListadoGestionEquipo" : "ListadoEquipoDesactivado";
+            nomArchivo = string.Format("{0}_{1}.xlsx", nomArchivo, DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        // POST: api/Equipo/ListadoGestionEquipo
+        [Route("GestionEquipos/Appliance/Listado")]
+        [HttpPost]
+        [Authorize]
+        public HttpResponseMessage PostListAppliance(PaginacionEquipo pag)
+        {
+            HttpResponseMessage response = null;
+            var totalRows = 0;
+            var registros = ServiceManager<EquipoDAO>.Provider.GetEquipoAppliance(pag, out totalRows);
+
+            var reader = new BootstrapTable<EquipoDTO>()
+            {
+                Total = totalRows,
+                Rows = registros
+            };
+
+            response = Request.CreateResponse(HttpStatusCode.OK, reader);
+            return response;
+        }
+
+        [Route("GestionEquipos/Appliance/ExisteEquipo")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetExisteEquipo(string clave, int id)
+        {
+            HttpResponseMessage response = null;
+            if (string.IsNullOrEmpty(clave)) clave = null;
+            bool estado = ServiceManager<EquipoDAO>.Provider.ExisteEquipoByNombre(clave, id);
+            response = Request.CreateResponse(HttpStatusCode.OK, estado);
+            return response;
+        }
+
+        [Route("GestionEquipos/Appliance/ExisteEquipoAsociado")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetExisteEquipoAsociado(int id)
+        {
+            HttpResponseMessage response = null;
+            bool estado = ServiceManager<EquipoDAO>.Provider.ExisteEquipoAsociadoById(id);
+            response = Request.CreateResponse(HttpStatusCode.OK, estado);
+            return response;
+        }
+
+        [Route("GestionEquipos/Appliance/Exportar")]
+        [HttpGet]
+        public HttpResponseMessage GetExportarGestionEquipoAppliance(string filtro, string filtroEquipo, int? flagActivo)
+        {
+            string filename = "";
+            var idsTipoEquipo = new List<int>();
+
+            var data = new ExportarData().ExportarGestionEquipoAppliance(filtro, filtroEquipo, flagActivo);
+            filename = "ListadoActivosTSI";
+            filename = string.Format("{0}_{1}.xlsx", filename, DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = filename;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("GestionEquipos/Exportar/Actualizar")]
+        [HttpGet]
+        public HttpResponseMessage GetExportarGestionEquiposActualizar(int tipoEquipoId)
+        {
+            string nomArchivo = "";
+
+            var data = new ExportarData().ExportarGestionEquiposActualizar(string.Empty, tipoEquipoId, -1, -1, 0, -1, "Id", "asc", (int)EPerfilBCP.Administrador, string.Empty);
+            nomArchivo = "ListadoEquipo";
+            nomArchivo = string.Format("{0}_{1}.xlsx", nomArchivo, DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("Exportar")]
+        [HttpGet]
+        public HttpResponseMessage GetExportar(string nombre, string so, string ambiente, string tipo, string desId, string subsiId, string sortName, string sortOrder, int perfilId, string matricula,string IP)
+        {
+            string nomArchivo = "";
+            var parametro = ServiceManager<ParametroDAO>.Provider.ObtenerParametro(Utilitarios.CODIGO_SUBDOMINIO_SISTEMA_OPERATIVO);
+            var idSubdominio = parametro != null ? int.Parse(parametro.Valor) : 0;
+            var data = new ExportarData().ExportarEquipos(nombre, so, ambiente, tipo, idSubdominio, desId, subsiId, sortName, sortOrder, perfilId, matricula,IP);
+            nomArchivo = string.Format("ListadoEquipo_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("GetServidoresRelacionadosByCodigoAPT")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetServidoresRelacionados(string codigoAPT, int pageNumber, int pageSize, string sortName, string sortOrder)
+        {
+            HttpResponseMessage response = null;
+            int totalRows = 0;
+            var registros = ServiceManager<EquipoDAO>.Provider.GetServidoresRelacionadosByCodigoAPT(codigoAPT, pageNumber, pageSize, sortName, sortOrder, out totalRows);
+            if (registros != null)
+            {
+                var dataRpta = new { Total = totalRows, Rows = registros };
+                response = Request.CreateResponse(HttpStatusCode.OK, dataRpta);
+            }
+            return response;
+        }
+
+        [Route("GetEquipoByTecnologiaId")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetEquipoByTecnologiaId(int tecnologiaId, int pageNumber, int pageSize, string sortName, string sortOrder)
+        {
+            HttpResponseMessage response = null;
+            int totalRows = 0;
+            var registros = ServiceManager<EquipoDAO>.Provider.GetEquipoByTecnologiaId(tecnologiaId, pageNumber, pageSize, sortName, sortOrder, out totalRows);
+            if (registros != null)
+            {
+                var dataRpta = new { Total = totalRows, Rows = registros };
+                response = Request.CreateResponse(HttpStatusCode.OK, dataRpta);
+            }
+            return response;
+        }
+
+        [Route("ExportarReporteSinRelaciones")]
+        [HttpGet]
+        public HttpResponseMessage GetExportarReporteSinRelaciones(string equipo, string tipoEquipoFiltrar, string so, string fechaConsulta, string sortName, string sortOrder)
+        {
+            string nomArchivo = "";
+            //tipoEquipoFiltrar = string.IsNullOrEmpty(tipoEquipoFiltrar) ? string.Empty : tipoEquipoFiltrar;
+            //equipo = string.IsNullOrEmpty(equipo) ? string.Empty : equipo;
+            //so = string.IsNullOrEmpty(so) ? string.Empty : so;
+
+            //var parametro = ServiceManager<ParametroDAO>.Provider.ObtenerParametro(Utilitarios.CODIGO_SUBDOMINIO_SISTEMA_OPERATIVO);
+            //var idSubdominio = parametro != null ? int.Parse(parametro.Valor) : 0;
+            var filtros = new PaginaReporteHuerfanos();
+            filtros.Equipo = equipo ?? string.Empty;
+            filtros.TipoEquipoToString = tipoEquipoFiltrar ?? string.Empty;
+            filtros.SistemaOperativo = so ?? string.Empty;
+            filtros.FechaConsulta = fechaConsulta;
+            filtros.sortName = sortName;
+            filtros.sortOrder = sortOrder;
+            filtros.pageNumber = 1;
+            filtros.pageSize = int.MaxValue;
+
+            var data = new ExportarData().ExportarReporteSinRelaciones(filtros);
+            nomArchivo = string.Format("ListadoEquipoSinRelacionConAplicacion_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("ListarEquipoTecnologiaByEquipoId/{Id:int}")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetListEquipoTecnologiaByEquipoId(int Id)
+        {
+            HttpResponseMessage response = null;
+            var listado = ServiceManager<EquipoDAO>.Provider.GetEquipoTecnologiaByEqId(Id);
+            response = Request.CreateResponse(HttpStatusCode.OK, listado);
+            return response;
+        }
+
+        [Route("GestionEquipos/ExportarDetalle")]
+        [HttpGet]
+        public HttpResponseMessage GetExportarGestionEquiposDetalle(string filtro, int tipoEquipoId, int desId, int exCalculoId, string sortName, string sortOrder)
+        {
+            string nomArchivo = "";
+            var data = new ExportarData().ExportarGestionEquiposDetalle(filtro, tipoEquipoId, desId, exCalculoId, sortName, sortOrder);
+            nomArchivo = string.Format("ListadoGestionEquipoDetallado_{0}.csv", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("EquipoXTecnologiaId")]
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult GetEquipoXTecnologiaId(int tecnologiaId, int pageNumber, int pageSize, string sortName, string sortOrder)
+        {
+            var totalRows = 0;
+            var registros = ServiceManager<EquipoDAO>.Provider.GetEquipoXTecnologiaId(tecnologiaId, pageNumber, pageSize, sortName, sortOrder, out totalRows);
+            if (registros == null)
+                return NotFound();
+
+            dynamic reader = new BootstrapTable<EquipoDTO>() { Total = totalRows, Rows = registros };
+            return Ok(reader);
+        }
+
+        [Route("GestionEquipos/ObtenerPlantillaEquipos")]
+        [HttpGet]
+        public HttpResponseMessage PostPlantillaEquipos()
+        {
+            string nomArchivo = "PlantillaCargaEquipos.xlsx";
+            var data = new ExportarData().ObtenerPlantillaEquipos();
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("GestionEquipos/CargarEquipos")]
+        [HttpPost]
+        [Authorize]
+        public HttpResponseMessage PostCargarEquipos()
+        {
+            try
+            {
+                HttpResponseMessage response = null;
+                HttpRequest request = HttpContext.Current.Request;
+
+                if (request.Files.Count > 0)
+                {
+                    HttpPostedFile clientFile = null;
+                    clientFile = request.Files["File"];
+                    EstadoCargaMasiva estadoCM = null;
+                    var inputStream = clientFile.InputStream;
+                    var nombre = clientFile.FileName;
+                    var extension = Path.GetExtension(nombre);
+
+                    estadoCM = new CargaData().CargaMasivaEquipos(extension, inputStream);
+                    response = Request.CreateResponse(HttpStatusCode.OK, estadoCM);
+                }
+                return response;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        [Route("GestionEquipos/ActualizarEquipos")]
+        [HttpPost]
+        [Authorize]
+        public HttpResponseMessage PostActualizarEquipos()
+        {
+            try
+            {
+                HttpResponseMessage response = null;
+                HttpRequest request = HttpContext.Current.Request;
+                string username = string.Empty;
+                username = request.Params["Usuario"];
+
+                if (request.Files.Count > 0)
+                {
+                    HttpPostedFile clientFile = null;
+                    clientFile = request.Files["File"];
+                    EstadoCargaMasiva estadoCM = null;
+                    var inputStream = clientFile.InputStream;
+                    var nombre = clientFile.FileName;
+                    var extension = Path.GetExtension(nombre);
+
+                    estadoCM = new CargaData().UpdateMasivoEquipos(extension, inputStream, username);
+                    response = Request.CreateResponse(HttpStatusCode.OK, estadoCM);
+                }
+                return response;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        [Route("GestionEquipos/EjecutarSP")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetEjecutarSPServidorIntoEquipo()
+        {
+            try
+            {
+                HttpResponseMessage response = null;
+                var data = new CargaData().EjecutarSPServidorEquipo();
+                response = Request.CreateResponse(HttpStatusCode.OK, data);
+
+                return response;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        // GET: api/Tipo/CambiarEstado/5
+        [Route("GestionEquipos/CambiarEstado")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetCambiarEstado(int Id, string Usuario, bool Activo, string Motivo)
+        {
+            HttpResponseMessage response = null;
+            var retorno = ServiceManager<EquipoDAO>.Provider.CambiarEstado(Id, !Activo, Usuario, Motivo);
+
+            response = Request.CreateResponse(HttpStatusCode.OK, retorno);
+            return response;
+        }
+
+
+        [Route("EquipoExclusion/ListarCombos")]
+        [HttpPost]
+        [Authorize]
+        public HttpResponseMessage PostEquipoExclusionListCombos()
+        {
+            HttpResponseMessage response = null;
+
+            var listTipoExclusion = ServiceManager<TipoExclusionDAO>.Provider.GetTipoExclusionByFiltro(null);
+
+            var dataRpta = new
+            {
+                TipoExclusion = listTipoExclusion
+            };
+
+            response = Request.CreateResponse(HttpStatusCode.OK, dataRpta);
+            return response;
+        }
+
+        [Route("EquipoExclusion/ListarEquiposExcluidos")]
+        [HttpPost]
+        [Authorize]
+        public IHttpActionResult PostListEquipoExclusion(PaginacionEquipo pag)
+        {
+            var totalRows = 0;
+            var registros = ServiceManager<EquipoDAO>.Provider.GetEquipoExclusion(pag.nombre, pag.tipoExclusionId, pag.pageNumber, pag.pageSize, pag.sortName, pag.sortOrder, out totalRows);
+
+            if (registros == null)
+                return NotFound();
+
+            dynamic reader = new BootstrapTable<HistoricoExclusionDTO>()
+            {
+                Total = totalRows,
+                Rows = registros
+            };
+
+            return Ok(reader);
+        }
+
+        [Route("EquipoExclusion/Exportar")]
+        [HttpGet]
+        public HttpResponseMessage GetExportarEquipoExclusion(string filtro, int tipoExclusionId, string sortName, string sortOrder)
+        {
+            string nomArchivo = "";
+            var data = new ExportarData().ExportarEquipoExclusion(filtro, tipoExclusionId, sortName, sortOrder);
+            nomArchivo = string.Format("ListadoEquipoExclusion_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("GestionEquipos/Exportar/Desactivados")]
+        [HttpGet]
+        public HttpResponseMessage GetExportarEquiposDesactivados(string filtro, string tipoEquipoId, string subsidiariaId, string sortName, string sortOrder)
+        {
+            string nomArchivo = "";
+            List<int> tipoEquipoIds = tipoEquipoId == null ? new List<int>() : tipoEquipoId.Split('|').Select(Int32.Parse).ToList();
+            List<int> subsidiariaIds = subsidiariaId == null ? new List<int>() : subsidiariaId.Split('|').Select(Int32.Parse).ToList();
+            var data = new ExportarData().ExportarEquiposDesactivados(filtro, tipoEquipoIds, subsidiariaIds, sortName, sortOrder);
+            nomArchivo = "ListadoEquipoDesactivado";
+            nomArchivo = string.Format("{0}_{1}.xlsx", nomArchivo, DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("ExportarServidoresRelacionadosByCodigoAPT")]
+        [HttpGet]
+        public HttpResponseMessage ExportarServidoresRelacionadosByCodigoAPT(string codigoAPT, string sortName, string sortOrder)
+        {
+            string fileName = "";
+            var data = new ExportarData().ExportarServidoresRelacionadosByAplicacion(codigoAPT, sortName, sortOrder);
+            fileName = string.Format("ListaServidoresRelacionadosXAplicación_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = fileName;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("TecnologiaOwner/ListarEquipoByTecnologiaTipoEquipo")]
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult PostListarEquipoByTecnologiaTipoEquipoTecnologiaOwner(int tecnologiaId, int tipoEquipoId)
+        {
+            var registros = ServiceManager<EquipoDAO>.Provider.ListarEquiposXTecnologiaTipoEquipo(tecnologiaId, tipoEquipoId);
+
+            if (registros == null)
+                return NotFound();
+
+            return Ok(registros);
+        }
+
+        [Route("TecnologiaOwner/ExportarListarEquipoByTecnologiaTipoEquipo")]
+        [HttpGet]
+        public HttpResponseMessage PostExportarListarEquipoByTecnologiaTipoEquipoTecnologiaOwner(int tecnologiaId, int tipoEquipoId, string tecnologiaStr, string tipoEquipoStr, string filtro)
+        {
+            string nomArchivo = string.Format("ListaTecnologias_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            var data = new ExportarData().ExportarListarEquipoByTecnologiaTipoEquipoTecnologiaOwner(tecnologiaId, tipoEquipoId, tecnologiaStr, tipoEquipoStr, filtro);
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("ProductoOwner/ListarEquipoByProductoTipoEquipo")]
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult PostListarEquipoByProductoTipoEquipoProductoOwner(int productoId, int tipoEquipoId)
+        {
+            var registros = ServiceManager<EquipoDAO>.Provider.ListarEquiposXProductoTipoEquipo(productoId, tipoEquipoId);
+
+            if (registros == null)
+                return NotFound();
+
+            return Ok(registros);
+        }
+
+        [Route("ProductoOwner/ExportarListarEquipoByProductoTipoEquipo")]
+        [HttpGet]
+        public HttpResponseMessage PostExportarListarEquipoByProductoTipoEquipoProductoOwner(int productoId, int tipoEquipoId, string productoStr, string tipoEquipoStr, string filtro)
+        {
+            string nomArchivo = string.Format("ListaTecnologias_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            var data = new ExportarData().ExportarListarEquipoByProductoTipoEquipoProductoOwner(productoId, tipoEquipoId, productoStr, tipoEquipoStr, filtro);
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        //[Route("ExportarListadoByProducto")]
+        //[HttpGet]
+        //public HttpResponseMessage PostExportarListTecnologiaByProducto(int productoId, string productoStr)
+        //{
+        //    string nomArchivo = string.Format("ListaTecnologias_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+        //    var data = new ExportarData().ExportarListarEquipoByProductoTipoEquipoProductoOwner(productoId, productoStr);
+
+        //    HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+        //    httpResponseMessage.Content = new ByteArrayContent(data);
+        //    httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+        //    httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+        //    httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+        //    return httpResponseMessage;
+        //}
+    }
+}

@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BCP.PAPP.Common.Dto
+{
+	public class ExpertoDto
+	{
+		public string managerName { get; set; }
+		public string username { get; set; }
+		public string email { get; set; }
+
+		public int Count { get; set; }
+	}
+}

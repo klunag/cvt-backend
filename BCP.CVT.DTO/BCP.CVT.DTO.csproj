@@ -1,0 +1,299 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BD2B5783-59AF-4B67-827D-2D8EFFE7FCA3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BCP.CVT.DTO</RootNamespace>
+    <AssemblyName>BCP.CVT.DTO</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FileHelpers, Version=3.4.2.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL">
+      <HintPath>..\packages\FileHelpers.3.4.2\lib\net45\FileHelpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ActivosDTO.cs" />
+    <Compile Include="AlertaDetalleDTO.cs" />
+    <Compile Include="AlertaDTO.cs" />
+    <Compile Include="AlertaProgramacionDTO.cs" />
+    <Compile Include="AmbienteDTO.cs" />
+    <Compile Include="AplicacionApisDTO.cs" />
+    <Compile Include="AplicacionCargaDto.cs" />
+    <Compile Include="AplicacionDetalleDTO.cs" />
+    <Compile Include="AplicacionDTO.cs" />
+    <Compile Include="AplicacionExpertoDTO.cs" />
+    <Compile Include="AplicacionMatriculaDTO.cs" />
+    <Compile Include="AplicacionPCIDTO.cs" />
+    <Compile Include="AplicacionPortafolioResponsablesDTO.cs" />
+    <Compile Include="AplicacionPotafolioDTO.cs" />
+    <Compile Include="AplicacionResponsableDto.cs" />
+    <Compile Include="AplicacionVinculadaDTO.cs" />
+    <Compile Include="Appliance\RelacionApplianceDTO.cs" />
+    <Compile Include="ApplicationFileDTO.cs" />
+    <Compile Include="ArchivosCvtDTO.cs" />
+    <Compile Include="AreaBianDTO.cs" />
+    <Compile Include="AmbienteGrupoRedDTO.cs" />
+    <Compile Include="EquipoInstanciaBdDTO.cs" />
+    <Compile Include="CertificadoDigitalDTO.cs" />
+    <Compile Include="AreaDTO.cs" />
+    <Compile Include="ArquetipoDTO.cs" />
+    <Compile Include="ArquitectoTiDTO.cs" />
+    <Compile Include="CheckListCross.cs" />
+    <Compile Include="ClientSecretDTO.cs" />
+    <Compile Include="MotorDeudaTecnicaDTO.cs" />
+    <Compile Include="MotorJustificacionDTO.cs" />
+    <Compile Include="FiltroTecnologiaDTO.cs" />
+    <Compile Include="GestionUmbralesDTO.cs" />
+    <Compile Include="MotorExcluirDTO.cs" />
+    <Compile Include="ProcesosLogsDTO.cs" />
+    <Compile Include="LogsDTO.cs" />
+    <Compile Include="CodigoReservadoDTO.cs" />
+    <Compile Include="ConnectionDto.cs" />
+    <Compile Include="Custom\DatosAdicionalesEquiposDto.cs" />
+    <Compile Include="Custom\GuardicoreConsolidado2DTO.cs" />
+    <Compile Include="Custom\GuardicoreConsolidadoDto.cs" />
+    <Compile Include="Custom\QualyConsolidadoDto.cs" />
+    <Compile Include="Custom\QualyDto.cs" />
+    <Compile Include="Custom\QualysConsolidadoKPIDto.cs" />
+    <Compile Include="Custom\QualyTecnologiaDto.cs" />
+    <Compile Include="Custom\ProductoOwnerDto.cs" />
+    <Compile Include="Custom\TecnologiaNoRegistradaQualysDto.cs" />
+    <Compile Include="Custom\UsuarioSigaDto.cs" />
+    <Compile Include="DependenciasAppsDTO.cs" />
+    <Compile Include="DependenciasDTO.cs" />
+    <Compile Include="FlujoSolicitudTecnologiaDTO.cs" />
+    <Compile Include="EquipoSolicitudDTO.cs" />
+    <Compile Include="FuncionDTO.cs" />
+    <Compile Include="GuardicoreApiDTO.cs" />
+    <Compile Include="AuditoriaDataDTO.cs" />
+    <Compile Include="AuditoriaTipoActivoDTO.cs" />
+    <Compile Include="Auditoria\AuditoriaAPI.cs" />
+    <Compile Include="Auditoria\AuditoriaDTO.cs" />
+    <Compile Include="AuthAplicacionDTO.cs" />
+    <Compile Include="AutorizadorDTO.cs" />
+    <Compile Include="AzureResourcesDTO.cs" />
+    <Compile Include="AzureResourceTypeDto.cs" />
+    <Compile Include="BandejaDTO.cs" />
+    <Compile Include="BaseDTO.cs" />
+    <Compile Include="BaseUsuarioDTO.cs" />
+    <Compile Include="BigFixDTO.cs" />
+    <Compile Include="BitacoraDto.cs" />
+    <Compile Include="BlobStorageDTO.cs" />
+    <Compile Include="BootstrapTable.cs" />
+    <Compile Include="ClasificacionTecnicaDTO.cs" />
+    <Compile Include="CmdbServidorDTO.cs" />
+    <Compile Include="CodigoCISDTO.cs" />
+    <Compile Include="ComentarioEliminacionRelacionDTO.cs" />
+    <Compile Include="ConfiguracionColumnaAplicacionDTO.cs" />
+    <Compile Include="ConfiguracionDTO.cs" />
+    <Compile Include="ConsultaDTO.cs" />
+    <Compile Include="CriticidadDTO.cs" />
+    <Compile Include="CuestionarioAplicacionDetalleDTO.cs" />
+    <Compile Include="CuestionarioAplicacionDTO.cs" />
+    <Compile Include="CuestionarioPaeDTO.cs" />
+    <Compile Include="Custom\ApiManagement.cs" />
+    <Compile Include="Custom\AplicacionCargaDto.cs" />
+    <Compile Include="Custom\AplicacionPublicDto.cs" />
+    <Compile Include="Custom\AplicacionTecnologiaDto.cs" />
+    <Compile Include="Custom\ApplianceCargaDto.cs" />
+    <Compile Include="Custom\AreaBianDto.cs" />
+    <Compile Include="Custom\ConsolidadoDto.cs" />
+    <Compile Include="Custom\EquipoNoRegistradoDto.cs" />
+    <Compile Include="Custom\IndicadoresDto.cs" />
+    <Compile Include="Custom\InstanciasDto.cs" />
+    <Compile Include="Custom\IPDto.cs" />
+    <Compile Include="Custom\ResponsableAplicacionDto.cs" />
+    <Compile Include="Custom\StorageDto.cs" />
+    <Compile Include="Custom\TecnologiaCargaDto.cs" />
+    <Compile Include="Custom\TecnologiaOwnerDto.cs" />
+    <Compile Include="Custom\TecnologiaPorVencerDto.cs" />
+    <Compile Include="Custom\TecnologiaSinFechaDto.cs" />
+    <Compile Include="Custom\VentanaDto.cs" />
+    <Compile Include="Custom\VistaRelacionDto.cs" />
+    <Compile Include="Descubrimiento\AddmSoftwareServidorDto.cs" />
+    <Compile Include="Descubrimiento\AddmSOServidorDto.cs" />
+    <Compile Include="DivisionDTO.cs" />
+    <Compile Include="DominioBianDTO.cs" />
+    <Compile Include="DominioDTO.cs" />
+    <Compile Include="DominioServidorDTO.cs" />
+    <Compile Include="EntornoDTO.cs" />
+    <Compile Include="EquipoDTO.cs" />
+    <Compile Include="EquipoPublicDTO.cs" />
+    <Compile Include="EquipoSoftwareBaseDTO.cs" />
+    <Compile Include="EquipoTecnologiaDTO.cs" />
+    <Compile Include="ErrorCargaMasivaDTO.cs" />
+    <Compile Include="EstadoAplicacionDTO.cs" />
+    <Compile Include="EstandarDTO.cs" />
+    <Compile Include="EstilosExcel.cs" />
+    <Compile Include="ExcepcionDTO.cs" />
+    <Compile Include="FamiliaDTO.cs" />
+    <Compile Include="FlujosRegistroDTO.cs" />
+    <Compile Include="GerenciaAllDTO.cs" />
+    <Compile Include="GerenciaDTO.cs" />
+    <Compile Include="GestionadoPorDTO.cs" />
+    <Compile Include="Graficos\PlotlyDataDTO.cs" />
+    <Compile Include="Graficos\ReporteAcumuladoDto.cs" />
+    <Compile Include="Graficos\ReporteAgrupacionDto.cs" />
+    <Compile Include="Graficos\ReporteDetalleTecnologiasDto.cs" />
+    <Compile Include="Graficos\ReportePrincipalDTO.cs" />
+    <Compile Include="Grilla\ReporteDetalladoTecnologiaDto.cs" />
+    <Compile Include="Grilla\ReporteEvolucionTecnologiaDto.cs" />
+    <Compile Include="Grilla\ReporteGerenciaDivisionDto.cs" />
+    <Compile Include="Grilla\ReporteGraficoSubdominiosDto.cs" />
+    <Compile Include="Grilla\ReporteServidoresHuerfanosDto.cs" />
+    <Compile Include="Grilla\TecnologiaG.cs" />
+    <Compile Include="GrupoTicketRemedyDto.cs" />
+    <Compile Include="HistorialDTO.cs" />
+    <Compile Include="HistorialModificacionDTO.cs" />
+    <Compile Include="HistoricoExclusionDTO.cs" />
+    <Compile Include="InfoAplicacionDTO.cs" />
+    <Compile Include="InfoCampoPortafolioDTO.cs" />
+    <Compile Include="ITManagement\ApplicationIdMgtDTO.cs" />
+    <Compile Include="ITManagement\ApplicationMgtDTO.cs" />
+    <Compile Include="ITManagement\ApplicationObsMgtDTO.cs" />
+    <Compile Include="ITManagement\ApplicationRelationsMgtDTO.cs" />
+    <Compile Include="ITManagement\EmployeeSigaMgtDTO.cs" />
+    <Compile Include="ITManagement\ItResourceIdMgtDTO.cs" />
+    <Compile Include="ITManagement\ItResourceMgtDTO.cs" />
+    <Compile Include="ITManagement\ItResourceRelationsMgtDTO.cs" />
+    <Compile Include="ITManagement\PaginationMgt.cs" />
+    <Compile Include="ITManagement\TechnologyMgtDTO.cs" />
+    <Compile Include="JefaturaAtiDTO.cs" />
+    <Compile Include="MensajeDTO.cs" />
+    <Compile Include="ModeloDTO.cs" />
+    <Compile Include="ModuloAplicacionDTO.cs" />
+    <Compile Include="MotivoDTO.cs" />
+    <Compile Include="NotaAplicacionDTO.cs" />
+    <Compile Include="NotificacionDTO.cs" />
+    <Compile Include="NotificacionExpertosDTO.cs" />
+    <Compile Include="NotificacionResponsableAplicacionDto.cs" />
+    <Compile Include="NuevoCampoPortafolioDTO.cs" />
+    <Compile Include="OwnerDTO.cs" />
+    <Compile Include="ParametricasCabeceraDTO.cs" />
+    <Compile Include="ParametricasDTO.cs" />
+    <Compile Include="ParametroDTO.cs" />
+    <Compile Include="PCIDto.cs" />
+    <Compile Include="PlataformaBcpDTO.cs" />
+    <Compile Include="PortafolioBackupDTO.cs" />
+    <Compile Include="PreguntaPaeDTO.cs" />
+    <Compile Include="ProcesoDTO.cs" />
+    <Compile Include="ProcesoVitalDTO.cs" />
+    <Compile Include="ProductoArquetipoDTO.cs" />
+    <Compile Include="ProductoDTO.cs" />
+    <Compile Include="ProtocoloDTO.cs" />
+    <Compile Include="MotorProcesoDTO.cs" />
+    <Compile Include="MotorReglasDTO.cs" />
+    <Compile Include="RelacionamientoFuncionDTO.cs" />
+    <Compile Include="RelacionAplicacionDTO.cs" />
+    <Compile Include="ReporteHardwareKpiDTO.cs" />
+    <Compile Include="ReporteEquipoHardwareDTO.cs" />
+    <Compile Include="RolesProductoAmbienteDTO.cs" />
+    <Compile Include="ProductoManagerRolesDTO.cs" />
+    <Compile Include="RolesProductoDTO.cs" />
+    <Compile Include="SiemDTO.cs" />
+    <Compile Include="SolicitudFlujoDTO.cs" />
+    <Compile Include="SolicitudFuncionDTO.cs" />
+    <Compile Include="SolicitudRolDTO.cs" />
+    <Compile Include="SolicitudTecnologiaCamposDTO.cs" />
+    <Compile Include="SolRolHistorialDTO.cs" />
+    <Compile Include="TecnologiaAplicacionDTO.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RelacionDTO.cs" />
+    <Compile Include="RelacionDetalleDTO.cs" />
+    <Compile Include="RelacionPublicDTO.cs" />
+    <Compile Include="RelacionTecnologiaDTO.cs" />
+    <Compile Include="RelevanciaDTO.cs" />
+    <Compile Include="RoadMapDTO.cs" />
+    <Compile Include="RolesGestionDTO.cs" />
+    <Compile Include="ServidorAplicacionDTO.cs" />
+    <Compile Include="SolicitudAprobadoresDTO.cs" />
+    <Compile Include="SolicitudArchivosDTO.cs" />
+    <Compile Include="SolicitudCampoModificadoDTO.cs" />
+    <Compile Include="SolicitudComentariosDTO.cs" />
+    <Compile Include="SolicitudDto.cs" />
+    <Compile Include="Storage\BackupDto.cs" />
+    <Compile Include="Storage\StorageDto.cs" />
+    <Compile Include="SubClasificacionTecnicaDTO.cs" />
+    <Compile Include="SubdominioDTO.cs" />
+    <Compile Include="SubdominioEquivalenciaDTO.cs" />
+    <Compile Include="TablaProcedenciaAplicacionDTO.cs" />
+    <Compile Include="TeamSquadDTO.cs" />
+    <Compile Include="TecnologiaDTO.cs" />
+    <Compile Include="TecnologiaEquivalenciaDTO.cs" />
+    <Compile Include="TecnologiaInstanciaDTO.cs" />
+    <Compile Include="TecnologiaNoRegistradaDTO.cs" />
+    <Compile Include="TecnologiaPorValidarDTO.cs" />
+    <Compile Include="TecnologiaVinculadaDTO.cs" />
+    <Compile Include="TipoArquetipoDTO.cs" />
+    <Compile Include="TipoCicloVidaDTO.cs" />
+    <Compile Include="TipoDTO.cs" />
+    <Compile Include="TipoEquipoDTO.cs" />
+    <Compile Include="TipoExclusionDTO.cs" />
+    <Compile Include="TipoExpertoDTO.cs" />
+    <Compile Include="TipoMensajeDTO.cs" />
+    <Compile Include="TipoParametroDTO.cs" />
+    <Compile Include="TreeElementDTO.cs" />
+    <Compile Include="UnidadDTO.cs" />
+    <Compile Include="SegundoNivelDTO.cs" />
+    <Compile Include="PuertoDTO.cs" />
+    <Compile Include="UnidadFondeoDTO.cs" />
+    <Compile Include="UrlAplicacionDTO.cs" />
+    <Compile Include="UsuarioDTO.cs" />
+    <Compile Include="VisitaSiteDTO.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BCP.CVT.Cross\BCP.CVT.Cross.csproj">
+      <Project>{C02711FB-54DC-4CE7-B0F7-A4AAE6C3D670}</Project>
+      <Name>BCP.CVT.Cross</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BCP.PAPP.Common\BCP.PAPP.Common.csproj">
+      <Project>{E050F2BF-F68A-428E-BE5D-87E7F11A125A}</Project>
+      <Name>BCP.PAPP.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,0 +1,855 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A22AA7A2-AAC2-4A0C-AB56-2939553A4E04}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BCP.CVT.Services</RootNamespace>
+    <AssemblyName>BCP.CVT.Services</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml.Extensions">
+      <HintPath>..\Assemblies\DocumentFormat.OpenXml.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Excel, Version=2.1.2.3, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.2.1.2.3\lib\net45\Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.3.6.0\lib\net45\ExcelDataReader.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader.DataSet, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.DataSet.3.6.0\lib\net35\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Azure.KeyVault.Core, Version=3.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.3.0.5\lib\net461\Microsoft.Azure.KeyVault.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.20\lib\net461\Microsoft.Rest.ClientRuntime.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Rest.ClientRuntime.Azure, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.Azure.3.3.18\lib\net452\Microsoft.Rest.ClientRuntime.Azure.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=9.3.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAzure.Storage.9.3.3\lib\net45\Microsoft.WindowsAzure.Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=106.11.7.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.11.7\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Packaging, Version=4.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Packaging.4.5.0\lib\net46\System.IO.Packaging.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq.Dynamic, Version=1.0.6132.35681, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.7\lib\net40\System.Linq.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Runtime" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ADUsuarios.cs" />
+    <Compile Include="AD\ADUser.cs" />
+    <Compile Include="Interface\HardwareDAO.cs" />
+    <Compile Include="Interface\ApplianceDAO.cs" />
+    <Compile Include="CargaMasiva\CargaData.cs" />
+    <Compile Include="CargaMasiva\CargaDataAplicacion.cs" />
+    <Compile Include="Email\MailManager.cs" />
+    <Compile Include="Exportar\ExportarData.cs" />
+    <Compile Include="Interface\ActivosDAO.cs" />
+    <Compile Include="Interface\AlertaDAO.cs" />
+    <Compile Include="Interface\AmbienteDAO.cs" />
+    <Compile Include="Interface\AplicacionDAO.cs" />
+    <Compile Include="Interface\Appliance\ApplianceEquipoDAO.cs" />
+    <Compile Include="Interface\ArchivosCvtDAO.cs" />
+    <Compile Include="Interface\ArquetipoDAO.cs" />
+    <Compile Include="Interface\AuditoriaDAO.cs" />
+    <Compile Include="Interface\AuthDAO.cs" />
+    <Compile Include="Interface\InstanciasBDDAO.cs" />
+    <Compile Include="Interface\AzureResourceDAO.cs" />
+    <Compile Include="Interface\BCPUnidadDAO.cs" />
+    <Compile Include="Interface\BigFixDAO.cs" />
+    <Compile Include="Interface\BlobStorageDAO.cs" />
+    <Compile Include="Interface\CriticidadDAO.cs" />
+    <Compile Include="Interface\DependenciasAppsDAO.cs" />
+    <Compile Include="Interface\DependenciasDAO.cs" />
+    <Compile Include="Interface\DominioDAO.cs" />
+    <Compile Include="Interface\DominioRedDAO.cs" />
+    <Compile Include="Interface\EntornoDAO.cs" />
+    <Compile Include="Interface\MotorDeudaTecnicaDAO.cs" />
+    <Compile Include="Interface\MotorJustificacionDAO.cs" />
+    <Compile Include="Interface\MotorDAO.cs" />
+    <Compile Include="Interface\MotorReglasDAO.cs" />
+    <Compile Include="Interface\EquipoDAO.cs" />
+    <Compile Include="Interface\ExcepcionDAO.cs" />
+    <Compile Include="Interface\FamiliaDAO.cs" />
+    <Compile Include="Interface\CodigoCISDAO.cs" />
+    <Compile Include="Interface\GestionUmbralesDAO.cs" />
+    <Compile Include="Interface\GraficoDAO.cs" />
+    <Compile Include="Interface\GuardicoreDAO.cs" />
+    <Compile Include="Interface\HistorialDAO.cs" />
+    <Compile Include="Interface\HistorialModificacionDAO.cs" />
+    <Compile Include="Interface\IndicadoresDAO.cs" />
+    <Compile Include="Interface\IPDAO.cs" />
+    <Compile Include="Interface\ITManagement\ApplicationMgtDAO.cs" />
+    <Compile Include="Interface\ITManagement\ITResourceMgtDAO.cs" />
+    <Compile Include="Interface\ITManagement\SigaMgtDAO.cs" />
+    <Compile Include="Interface\ITManagement\TechnologyMgtDAO.cs" />
+    <Compile Include="Interface\MepDAO.cs" />
+    <Compile Include="Interface\ModeloDAO.cs" />
+    <Compile Include="Interface\MotivoDAO.cs" />
+    <Compile Include="Interface\NotificacionDAO.cs" />
+    <Compile Include="Interface\ParametricasDAO.cs" />
+    <Compile Include="Interface\ParametroDAO.cs" />
+    <Compile Include="Interface\PortafolioAplicaciones\ApplicationDAO.cs" />
+    <Compile Include="Interface\PortafolioAplicaciones\ClasificacionTecnicaDAO.cs" />
+    <Compile Include="Interface\PortafolioAplicaciones\CommonDAO.cs" />
+    <Compile Include="Interface\InfoAplicacionDAO.cs" />
+    <Compile Include="Interface\ProcesoDAO.cs" />
+    <Compile Include="Interface\ProductoDAO.cs" />
+    <Compile Include="Interface\ProtocoloDAO.cs" />
+    <Compile Include="Interface\MotorProcesoDAO.cs" />
+    <Compile Include="Interface\RelacionamientoFuncionDAO.cs" />
+    <Compile Include="Interface\QualyDAO.cs" />
+    <Compile Include="Interface\RelacionDAO.cs" />
+    <Compile Include="Interface\RelevanciaDAO.cs" />
+    <Compile Include="Interface\ReportePortafolioDAO.cs" />
+    <Compile Include="Interface\RoadMapDAO.cs" />
+    <Compile Include="Interface\ServiceManager.cs" />
+    <Compile Include="Interface\ServiceProvider.cs" />
+    <Compile Include="Interface\SiemDAO.cs" />
+    <Compile Include="Interface\SolicitudAplicacionDAO.cs" />
+    <Compile Include="Interface\SolicitudRolDAO.cs" />
+    <Compile Include="Interface\StorageDAO.cs" />
+    <Compile Include="Interface\SubdominioDAO.cs" />
+    <Compile Include="Interface\TechnologyConfiguration\TechnologyConfigurationDAO.cs" />
+    <Compile Include="Interface\TecnologiaDAO.cs" />
+    <Compile Include="Interface\TecnologiaNoRegistradaDAO.cs" />
+    <Compile Include="Interface\TipoArquetipoDAO.cs" />
+    <Compile Include="Interface\TipoEquipoDAO.cs" />
+    <Compile Include="Interface\TipoCicloVidaDAO.cs" />
+    <Compile Include="Interface\TipoDAO.cs" />
+    <Compile Include="Interface\TipoExclusionDAO.cs" />
+    <Compile Include="Interface\PuertoDAO.cs" />
+    <Compile Include="Interface\UnidadFondeoDAO.cs" />
+    <Compile Include="Interface\UrlAplicacionDAO.cs" />
+    <Compile Include="Interface\UsuarioDAO.cs" />
+    <Compile Include="Interface\VistaDAO.cs" />
+    <Compile Include="Log\HelperLog.cs" />
+    <Compile Include="ModelDB\Alerta.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\AlertaDetalle.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\AlertaProgramacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Ambiente.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Aplicacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\AplicacionCargaMasiva.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\AplicacionConfiguracion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\AplicacionDetalle.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\AplicacionExpertos.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\AplicacionPortafolioResponsables.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\AplicacionVinculada.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Application.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ApplicationCargaMasiva.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ApplicationFile.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ApplicationFlow.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ApplicationFlowData.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ApplicationHistorico.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ApplicationManager.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ApplicationManagerCatalog.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ApplicationPCI.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ArchivosCVT.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Area.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\AreaBian.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Arquetipo.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ArquetipoTecnologia.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ArquitectoTI.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\AuditoriaAPI.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\AuditoriaData.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\AuditoriaTipoActivo.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\AuthAplicacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\AutorizadorTecnologia.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\AzureResourceType.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Bandeja.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\BandejaAprobacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\BaseUsuarios.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\BaseUsuariosGrupo.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\BCP_CATG_GH_UNIDADES.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\BitacoraAcciones.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Broker.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ChapterFuncionesRoles.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ClasificacionTecnica.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Cluster.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\CodigoCIS.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\CodigoCIS_Servidor.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\CodigoCIS_ServidorNoRegistrado.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\CodigoReservado.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ComentarioEliminacionRelacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ConfiguracionColumnaAplicacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ConfiguracionColumnaModulo.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ConfiguracionTecnologiaCampos.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Consultas.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Criticidad.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\CuestionarioAplicacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\CuestionarioAplicacionDetalle.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\CuestionarioPae.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Division.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Dominio.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\DominioBian.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\DominioServidor.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Entorno.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Equipo.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\EquipoCicloVida.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\EquipoConfiguracion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\EquipoSoftwareBase.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\EquipoSolicitud.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\EquipoTecnologia.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ErrorCargaMasiva.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Estandar.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Excepcion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Familia.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Gerencia.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\GestionadoPor.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\GrupoRemedy.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Guardicore.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\GuardicoreAssets.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\GuardicoreEtiquetadoEquipos.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\GuardicoreLabels.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\HistorialModificacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\HistoricoExclusion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\InfoCampoPortafolio.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\InitialApplication.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\InitialApplicationManagerCatalog.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\JefaturaAti.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Mensaje.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ModelCVT.Context.cs">
+      <DependentUpon>ModelCVT.Context.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="ModelDB\ModelCVT.Context.Extend.cs" />
+    <Compile Include="ModelDB\ModelCVT.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="ModelDB\ModelCVT.Designer.cs">
+      <DependentUpon>ModelCVT.edmx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="ModelDB\ModuloAplicacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Motivo.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\NotaAplicacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Notificacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\NotificacionApp.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\NotificacionResponsableAplicacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\NuevoCampoPortafolio.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Parametrica.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ParametricaDetalle.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Parametro.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ParametroApp.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\PeticionBigFix.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\PlataformaBcp.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\PortafolioBackup.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\PortafolioResponsables.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\PreguntaPae.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Proceso.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ProcesoVital.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Producto.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ProductoArquetipo.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ProductoManager.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ProductoManagerRoles.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Relacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\RelacionDetalle.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Relevancia.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\RoadMap.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\RolesProducto.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\RolesProductoAmbiente.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\RolOndemand.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\RolServidor.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Servidor.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\ServidorAplicacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Solicitud.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\SolicitudAplicacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\SolicitudAplicacionDetalle.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\SolicitudAprobadores.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\SolicitudArchivos.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\SolicitudCampoModificado.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\SolicitudCampos.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\SolicitudComentarios.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\SolicitudRelacionFuncion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\SolicitudRelacionFuncionDetalle.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\SolicitudRolFuncion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\SolicitudTecnologia.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\SolicitudTecnologiaCampos.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\SolicitudTecnologiaFlujo.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\SolRolFuncionCabecera.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\SolRolFuncionHistorial.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\SubClasificacionTecnica.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Subdominio.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\SubdominioEquivalencia.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TablaProcedencia.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TablaProcedenciaAplicacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TeamSquad.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Tecnologia.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TecnologiaAplicacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TecnologiaArquetipo.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TecnologiaAutorizador.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TecnologiaCicloVida.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TecnologiaDetalleMaestra.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TecnologiaEquivalencia.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TecnologiaNoRegistrada.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TecnologiaVinculada.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Tipo.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TipoActivoInformacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TipoAlerta.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TipoArquetipo.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TipoCicloVida.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TipoEquipo.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TipoExclusion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TipoExperto.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TipoMensaje.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TipoNotificacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TipoNotificacionApp.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TipoParametro.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TipoPCI.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\TribeLeader.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\Unidad.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\UrlAplicacion.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\UrlAplicacionEquipo.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\UrlFuente.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\USP_Cmdb_ListarDiscosServidores_Result.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\USP_Cmdb_ListarServidorByCodigoCIS_Result.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\USP_ListarNombreServidores_Result.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelDB\VisitaSite.cs">
+      <DependentUpon>ModelCVT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Interface\ReporteDAO.cs" />
+    <Compile Include="Service\ActivosSvc.cs" />
+    <Compile Include="Service\AlertaSvc.cs" />
+    <Compile Include="Service\AmbienteSvc.cs" />
+    <Compile Include="Service\HardwareSvc.cs" />
+    <Compile Include="Service\AplicacionSvc.cs" />
+    <Compile Include="Service\ApplianceSvc.cs" />
+    <Compile Include="Service\Appliance\ApplianceEquipoSvc.cs" />
+    <Compile Include="Service\ArchivosCvtSvc.cs" />
+    <Compile Include="Service\ArquetipoSvc.cs" />
+    <Compile Include="Service\InstanciasBDSvc.cs" />
+    <Compile Include="Service\DependenciasAppsSvc.cs" />
+    <Compile Include="Service\DependenciasSvc.cs" />
+    <Compile Include="Service\GestionUmbralesSvc.cs" />
+    <Compile Include="Service\GuardicoreSvc.cs" />
+    <Compile Include="Service\AuditoriaSvc.cs" />
+    <Compile Include="Service\AuthSvc.cs" />
+    <Compile Include="Service\AzureResourceSvc.cs" />
+    <Compile Include="Service\BCPUnidadSvc.cs" />
+    <Compile Include="Service\BigFixSvc.cs" />
+    <Compile Include="Service\BlobStorageSvc.cs" />
+    <Compile Include="Service\CriticidadSvc.cs" />
+    <Compile Include="Service\DominioRedSvc.cs" />
+    <Compile Include="Service\DominioSvc.cs" />
+    <Compile Include="Service\EntornoSvc.cs" />
+    <Compile Include="Service\EquipoSvc.cs" />
+    <Compile Include="Service\ExcepcionSvc.cs" />
+    <Compile Include="Service\FamiliaSvc.cs" />
+    <Compile Include="Service\CodigoCISSvc.cs" />
+    <Compile Include="Service\GraficoSvc.cs" />
+    <Compile Include="Service\HistorialModificacionSvc.cs" />
+    <Compile Include="Service\HistorialSvc.cs" />
+    <Compile Include="Service\IndicadoresSvc.cs" />
+    <Compile Include="Service\IPSvc.cs" />
+    <Compile Include="Service\ITManagement\ApplicationMgtSvc.cs" />
+    <Compile Include="Service\ITManagement\ITResourceMgtSvc.cs" />
+    <Compile Include="Service\ITManagement\SigaMgtSvc.cs" />
+    <Compile Include="Service\ITManagement\TechnologyMgtSvc.cs" />
+    <Compile Include="Service\MepSvc.cs" />
+    <Compile Include="Service\ModeloSvc.cs" />
+    <Compile Include="Service\MotivoSvc.cs" />
+    <Compile Include="Service\MotorDeudaTecnicaSvc.cs" />
+    <Compile Include="Service\MotorJustificacionSvc.cs" />
+    <Compile Include="Service\MotorSvc.cs" />
+    <Compile Include="Service\NotificacionSvc.cs" />
+    <Compile Include="Service\ParametricasSvc.cs" />
+    <Compile Include="Service\ParametroSvc.cs" />
+    <Compile Include="Service\PortafolioAplicaciones\ApplicationSvc.cs" />
+    <Compile Include="Service\PortafolioAplicaciones\ClasificacionTecnicaSvc.cs" />
+    <Compile Include="Service\PortafolioAplicaciones\CommonSvc.cs" />
+    <Compile Include="Service\InfoAplicacionSvc.cs" />
+    <Compile Include="Service\ProcesoSvc.cs" />
+    <Compile Include="Service\ProductoSvc.cs" />
+    <Compile Include="Service\ProtocoloSvc.cs" />
+    <Compile Include="Service\MotorProcesoSvc.cs" />
+    <Compile Include="Service\MotorReglasSvc.cs" />
+    <Compile Include="Service\RelacionamientoFuncionSvc.cs" />
+    <Compile Include="Service\QualySvc.cs" />
+    <Compile Include="Service\RelacionSvc.cs" />
+    <Compile Include="Service\RelevanciaSvc.cs" />
+    <Compile Include="Service\ReportePortafolioSvc.cs" />
+    <Compile Include="Service\ReporteSvc.cs" />
+    <Compile Include="Service\RoadMapSvc.cs" />
+    <Compile Include="Service\SiemSvc.cs" />
+    <Compile Include="Service\SolicitudAplicacionSvc.cs" />
+    <Compile Include="Service\SolicitudRolSvc.cs" />
+    <Compile Include="Service\StorageSvc.cs" />
+    <Compile Include="Service\SubdominioSvc.cs" />
+    <Compile Include="Service\TechnologyConfiguration\TechnologyConfigurationSvc.cs" />
+    <Compile Include="Service\TecnologiaNoRegistradaSvc.cs" />
+    <Compile Include="Service\TecnologiaSvc.cs" />
+    <Compile Include="Service\TipoArquetipoSvc.cs" />
+    <Compile Include="Service\TipoEquipoSvc.cs" />
+    <Compile Include="Service\TipoCicloVidaSvc.cs" />
+    <Compile Include="Service\TipoExclusionSvc.cs" />
+    <Compile Include="Service\TipoSvc.cs" />
+    <Compile Include="Service\PuertoSvc.cs" />
+    <Compile Include="Service\UnidadFondeoSvc.cs" />
+    <Compile Include="Service\UrlAplicacionSvc.cs" />
+    <Compile Include="Service\UsuarioSvc.cs" />
+    <Compile Include="Service\VistaSvc.cs" />
+    <Compile Include="SQL\SQLManager.cs" />
+    <Compile Include="SQL\SQLParam.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <None Include="ModelDB\ModelCVT.edmx.diagram">
+      <DependentUpon>ModelCVT.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BCP.CVT.Cross\BCP.CVT.Cross.csproj">
+      <Project>{c02711fb-54dc-4ce7-b0f7-a4aae6c3d670}</Project>
+      <Name>BCP.CVT.Cross</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BCP.CVT.DTO\BCP.CVT.DTO.csproj">
+      <Project>{bd2b5783-59af-4b67-827d-2d8effe7fca3}</Project>
+      <Name>BCP.CVT.DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BCP.CVT.EnvioCorreos\BCP.CVT.EnvioCorreos.csproj">
+      <Project>{31E5A24C-4563-45FF-AF6C-B90DAAFC9B37}</Project>
+      <Name>BCP.CVT.EnvioCorreos</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BCP.PAPP.Common\BCP.PAPP.Common.csproj">
+      <Project>{E050F2BF-F68A-428E-BE5D-87E7F11A125A}</Project>
+      <Name>BCP.PAPP.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="ModelDB\ModelCVT.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ModelCVT.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ModelDB\ModelCVT.Context.tt">
+      <DependentUpon>ModelCVT.edmx</DependentUpon>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ModelCVT.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="ModelDB\ModelCVT.tt">
+      <DependentUpon>ModelCVT.edmx</DependentUpon>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ModelCVT.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

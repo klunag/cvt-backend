@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BES.xsd">
+ <SourcedFixletAction>
+   <SourceFixlet>
+    <Sitename>BCP Integrations</Sitename>
+     <FixletID>1168428</FixletID>
+     <Action>Action1</Action>
+   </SourceFixlet>
+   <Target>
+     <ComputerName>[SERVIDOR]</ComputerName>
+   </Target>
+   <Parameter Name="computerPath">[RUTA]</Parameter>
+   <Parameter Name="listaPara">[EMAIL]</Parameter>
+ </SourcedFixletAction>
+</BES>

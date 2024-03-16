@@ -1,0 +1,1396 @@
+﻿using BCP.CVT.Cross;
+using BCP.CVT.DTO;
+using BCP.CVT.DTO.Grilla;
+using BCP.CVT.Services.CargaMasiva;
+using BCP.CVT.Services.Exportar;
+using BCP.CVT.Services.Interface;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using System.Web.Http.Cors;
+using System.Web.Http.Description;
+using BCP.CVT.WebApi.Auth;
+using BCP.CVT.DTO.Custom;
+
+namespace BCP.CVT.WebApi.Controllers
+{
+    //[EnableCors(origins: "*", headers: "*", methods: "*")]
+    [RoutePrefix("api/Tecnologia")]
+    public class TecnologiaController : BaseController
+    {
+        //Asociados a los nuevos endpoints
+        [Route("Dominios")]
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult GetAllDominiosActivos()
+        {
+            var listTec = ServiceManager<DominioDAO>.Provider.GetDominios();
+            if (listTec == null)
+                return NotFound();
+
+            return Ok(listTec);
+        }
+
+        [Route("Dominios/{domId:int}/Subdominios")]
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult GetAllSubdominiosActivos(int domId)
+        {
+            var listTec = ServiceManager<DominioDAO>.Provider.GetSubdominios(domId);
+            if (listTec == null)
+                return NotFound();
+
+            return Ok(listTec);
+        }
+
+        [Route("Tipos")]
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult GetAllTiposActivos()
+        {
+            var listTec = ServiceManager<TipoDAO>.Provider.GetAllTipoActivos();
+            if (listTec == null)
+                return NotFound();
+
+            return Ok(listTec);
+        }
+
+        [Route("Base")]
+        [HttpPost]
+        [Authorize]
+        public HttpResponseMessage PostUpdateAtributos(DtoTecnologia tecnologia)
+        {
+            HttpResponseMessage response = null;
+            var codeId = ServiceManager<TecnologiaDAO>.Provider.AddOrEditTecnologiaPowerApps(tecnologia);
+            response = Request.CreateResponse(codeId > 0 ? HttpStatusCode.OK : HttpStatusCode.BadRequest, codeId);
+
+            return response;
+        }
+
+        // GET: api/Tecnologia
+        [Route("")]
+        [HttpGet]
+		[Authorize]
+		public IHttpActionResult GetAllTecnologia()
+        {
+            var listTec = ServiceManager<TecnologiaDAO>.Provider.GetAllTecnologia();
+            if (listTec == null)
+                return NotFound();
+
+            return Ok(listTec);
+        }
+
+        // GET: api/Tecnologia/5
+        [Route("{id:int}")]
+        [ResponseType(typeof(TecnologiaDTO))]
+        [HttpGet]
+		[Authorize]
+		public IHttpActionResult GetTecById(int id, bool withAplicaciones = false)
+        {
+            var objTec = ServiceManager<TecnologiaDAO>.Provider.GetTecById(id);
+            if (objTec == null)
+                return NotFound();
+
+            if (withAplicaciones)
+            {
+                objTec.ListAplicaciones = ServiceManager<TecnologiaDAO>.Provider.GetTecnologiaAplicaciones(objTec.Id);
+            }
+
+            return Ok(objTec);
+        }
+
+        // GET: api/Tecnologia/Subdominios/3
+        [Route("Subdominios/{domId:int}")]
+        [HttpGet]
+		[Authorize]
+		public IHttpActionResult GetSubByDom(int domId)
+        {
+            var itemsSubdom = ServiceManager<TecnologiaDAO>.Provider.GetSubByDom(domId);
+            if (itemsSubdom == null)
+                return NotFound();
+
+            return Ok(itemsSubdom);
+        }
+
+        // POST: api/Tecnologia/Listado
+        [Route("Listado")]
+        [HttpPost]
+		[Authorize]
+		public IHttpActionResult PostListTec(PaginacionTec pag)
+        {
+            var totalRows = 0;
+            var registros = ServiceManager<TecnologiaDAO>.Provider.GetTec(pag.domId,
+                                                                          pag.subdomId,
+                                                                          pag.nombre,
+                                                                          pag.aplica,
+                                                                          pag.codigo,
+                                                                          pag.dueno,
+                                                                          pag.equipo,
+                                                                          pag.pageNumber,
+                                                                          pag.pageSize,
+                                                                          pag.sortName,
+                                                                          pag.sortOrder,
+                                                                          out totalRows);
+            if (registros == null)
+                return NotFound();
+
+            dynamic reader = new BootstrapTable<TecnologiaG>()
+            {
+                Total = totalRows,
+                Rows = registros
+            };
+
+            return Ok(reader);
+        }
+
+        // POST: api/Tecnologia
+        [Route("")]
+        [HttpPost]
+        [ResponseType(typeof(TecnologiaDTO))]
+		[Authorize]
+		public IHttpActionResult PostTecnologia(TecnologiaDTO tecDTO)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            int IdTec = ServiceManager<TecnologiaDAO>.Provider.AddOrEditTecnologia(tecDTO);
+
+            if (IdTec == 0)
+                return NotFound();
+
+            return Ok(IdTec);
+        }
+
+        // GET: api/Tecnologia/CambiarEstado/5
+        [Route("CambiarEstado")]
+        [HttpGet]
+		[Authorize]
+		public HttpResponseMessage GetCambiarEstado(int Id, string Usuario)
+        {
+            HttpResponseMessage response = null;
+            var entidad = ServiceManager<TecnologiaDAO>.Provider.GetTecById(Id);
+            var retorno = ServiceManager<TecnologiaDAO>.Provider.CambiarEstado(Id, !entidad.Activo, Usuario);
+
+            response = Request.CreateResponse(HttpStatusCode.OK, retorno);
+            return response;
+        }
+
+        // GET: api/Tecnologia/ValidarEquivalencia
+        [Route("ValidarEquivalencia")]
+        [HttpGet]
+		[Authorize]
+		public HttpResponseMessage PostValidarEquivalencia(string equivalencia)
+        {
+            HttpResponseMessage response = null;
+            var retorno = ServiceManager<TecnologiaDAO>.Provider.ExisteEquivalencia(equivalencia);
+            response = Request.CreateResponse(HttpStatusCode.OK, retorno);
+            return response;
+        }
+
+        // GET: api/Tecnologia/CambiarEstadoTec
+        [Route("CambiarEstadoTec")]
+        [HttpPost]
+		[Authorize]
+		public IHttpActionResult GetCambiarEstadoTec(ParametroEstadoTec obj)
+        {
+            //var entidad = ServiceManager<TecnologiaDAO>.Provider.GetTecById(id);
+            var retorno = ServiceManager<TecnologiaDAO>.Provider.CambiarEstadoSTD(obj.id, obj.est, obj.obs, obj.UsuarioModificacion);
+            return Ok(retorno);
+        }
+
+        [Route("ListarCombos")]
+        [HttpPost]
+		[Authorize]
+		public HttpResponseMessage PostListCombos()
+        {
+            HttpResponseMessage response = null;
+
+            var paramCompatibilidadSO = ServiceManager<ParametroDAO>.Provider.ObtenerParametro("GESTION_TECNOLOGIAS_COMPATIBILIDAD_SO");
+            var paramCompatibilidadCloud = ServiceManager<ParametroDAO>.Provider.ObtenerParametro("GESTION_TECNOLOGIAS_PROVEEDOR_CLOUD");
+            var paramSustentoMotivo = ServiceManager<ParametroDAO>.Provider.ObtenerParametro("GESTION_TECNOLOGIAS_SUSTENTO_MOTIVO");
+            var paramTipoFechaInterna = ServiceManager<ParametroDAO>.Provider.ObtenerParametro("GESTION_TECNOLOGIAS_TIPO_FECHA_INTERNA");
+
+            var listCompatibilidadSO = (paramCompatibilidadSO.Valor ?? "").Split('|');
+            var listCompatibilidadCloud = (paramCompatibilidadCloud.Valor ?? "").Split('|');
+            var listSustentoMotivo = (paramSustentoMotivo.Valor ?? "").Split('|');
+            var listTipoFechaInterna = (paramTipoFechaInterna.Valor ?? "").Split('|');
+            //var listProducto = ServiceManager<ProductoDAO>.Provider.GetAllProducto();
+            var listFuente = Utilitarios.EnumToList<Fuente>();
+            var listFechaCalculo = Utilitarios.EnumToList<FechaCalculoTecnologia>();
+            var listEstadoObs = Utilitarios.EnumToList<ETecnologiaEstado>();
+            var listDominio = ServiceManager<DominioDAO>.Provider.GetAllDominioByFiltro(null);
+            var listSubDominio = ServiceManager<SubdominioDAO>.Provider.GetAllSubdominioByFiltro(null);
+            var listFamilia = ServiceManager<FamiliaDAO>.Provider.GetAllFamiliaByFiltro(null);
+            var listTipoTec = ServiceManager<TipoDAO>.Provider.GetAllTipoByFiltro(null);
+            var listFechaFinSoporte = Utilitarios.EnumToList<EFechaFinSoporte>();
+            //var listTipoFechaInterna = Utilitarios.EnumToList<ETipoFechaInterna>();
+            var listEstadoTecnologia = Utilitarios.EnumToList<EstadoTecnologia>();
+            var lAplicaTecnologia = Utilitarios.EnumToList<EAplicaATecnologia>();
+            var listMotivo = ServiceManager<MotivoDAO>.Provider.GetAllMotivo();
+            var listImplementacionAutomatizada = Utilitarios.EnumToList<EAutomatizacionImplementada>();
+            var listRevisionSeguridad = Utilitarios.EnumToList<RevisionSeguridad>();
+            var listUrlConfluence = Utilitarios.EnumToList<UrlConfluence>();
+            var listValores = new int[] { 0, 1, 2, 3, 4, 5 }.Select(x => new { Id = x, Descripcion = x.ToString() }).ToList();
+            //var listEstadoObsolescencia = Utilitarios.EnumToList<>();
+            var listEsquemaLicenciamientoSuscripcion = Utilitarios.EnumToList<EEsquemaLicenciamientoSuscripcion>().Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) });
+
+            var dataRpta = new
+            {
+                //Producto = listProducto,
+                Fuente = listFuente.Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList(),
+                FechaCalculo = listFechaCalculo.Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList(),
+                EstadoObs = listEstadoObs.Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }),
+                Tipo = listTipoTec,
+                Dominio = listDominio,
+                SubDominio = listSubDominio,
+                Familia = listFamilia,
+                TipoTec = listTipoTec,
+                CodigoInterno = (int)ETablaProcedencia.CVT_Tecnologia,
+                FechaFinSoporte = listFechaFinSoporte.Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList(),
+                TipoFechaInterna = listTipoFechaInterna,
+                EstadoTecnologia = listEstadoTecnologia.Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList(),
+                AplicaTecnologia = lAplicaTecnologia.Select(x => Utilitarios.GetEnumDescription2(x)).ToArray(),
+                RevisionSeguridad = listRevisionSeguridad.Select(x => new { Id= (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList(),
+                UrlConfluence = listUrlConfluence.Select(x => new { Id= (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList(),
+                ImplementacionAutomatizada = listImplementacionAutomatizada.Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList(),
+                Motivo = listMotivo,
+                CompatibilidadSO = listCompatibilidadSO,
+                CompatibilidadCloud = listCompatibilidadCloud,
+                SustentoMotivo = listSustentoMotivo,
+                Valores = listValores,
+                EsquemaLicenciamientoSuscripcion = listEsquemaLicenciamientoSuscripcion,
+            };
+
+            response = Request.CreateResponse(HttpStatusCode.OK, dataRpta);
+            return response;
+        }
+
+        [Route("Exportar")]
+        [HttpGet]
+        public HttpResponseMessage GetExportarTec(string nombre, int dominioId, int subdominioId, string aplica, string codigo, string dueno, string equipo, string sortName, string sortOrder)
+        {
+            string nomArchivo = "";
+            if (string.IsNullOrEmpty(nombre)) nombre = null;
+            var data = new ExportarData().ExportarTecnologia(nombre, dominioId, subdominioId, aplica, codigo, dueno, equipo, sortName, sortOrder);
+            nomArchivo = string.Format("ListaTecnologia_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        #region Usuario STD
+        // POST: api/Tecnologia/ListadoSTD
+        [Route("ListadoSTD")]
+        [HttpPost]
+		[Authorize]
+		public IHttpActionResult PostListTecSTD(PaginacionTecSTD pag)
+        {
+            var totalRows = 0;
+            var registros = ServiceManager<TecnologiaDAO>.Provider.GetTecSTD(pag.domIds,
+                                                                          pag.subdomIds,
+                                                                          pag.casoUso,
+                                                                          pag.nombre,
+                                                                          pag.estadoIds,
+                                                                          pag.famId,
+                                                                          pag.fecId,
+                                                                          pag.aplica,
+                                                                          pag.codigo,
+                                                                          pag.dueno,
+                                                                          pag.equipo,
+                                                                          pag.tipoTecIds,
+                                                                          pag.estObsIds,
+                                                                          pag.flagActivo,
+                                                                          pag.pageNumber,
+                                                                          pag.pageSize,
+                                                                          pag.sortName,
+                                                                          pag.sortOrder,
+                                                                          out totalRows);
+            if (registros == null)
+                return NotFound();
+
+            dynamic reader = new BootstrapTable<TecnologiaG>()
+            {
+                Total = totalRows,
+                Rows = registros
+            };
+
+            return Ok(reader);
+        }
+
+        [Route("ExportarSTD")]
+        [HttpGet]
+        public HttpResponseMessage GetExportarTecSTD(string nombre, string dominioIds, string subdominioIds, string familiaId, int estadoFecSop, string casoUso, string estadoTecs, string aplica, string codigo, string dueno, string equipo, string tipoTecIds, string estObsIds, int? flagActivo, string sortName, string sortOrder)
+        {
+            string nomArchivo = "";
+            if (string.IsNullOrEmpty(nombre)) nombre = null;
+
+            var listaDominiosIds = dominioIds == null ? new List<int>() : dominioIds.Split('|').Select(Int32.Parse).ToList();
+            var listaSubDominiosIds = subdominioIds == null ? new List<int>() : subdominioIds.Split('|').Select(Int32.Parse).ToList();
+            var listaEstadoTecIds = estadoTecs == null ? new List<int>() : estadoTecs.Split('|').Select(Int32.Parse).ToList();
+            var listaTipoTecIds = tipoTecIds == null ? new List<int>() : tipoTecIds.Split('|').Select(Int32.Parse).ToList();
+            var listaEstadoObsIds = estObsIds == null ? new List<int>() : estObsIds.Split('|').Select(Int32.Parse).ToList();
+
+            var data = new ExportarData().ExportarTecnologiaSTD(nombre, listaDominiosIds, listaSubDominiosIds, familiaId, estadoFecSop, casoUso, listaEstadoTecIds, aplica, codigo, dueno, equipo, listaTipoTecIds, listaEstadoObsIds, flagActivo, sortName, sortOrder);
+            nomArchivo = string.Format("ListaTecnologiaSTD_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("ExportarReporteTecnologia")]
+        [HttpGet]
+        public HttpResponseMessage GetExportarReporteTecnologia(string nombre, string dominioIds, string subdominioIds, string familiaId, int estadoFecSop, string casoUso, string estadoTecs, string aplica, string codigo, string dueno, string equipo, string tipoTecIds, string estObsIds, int? flagActivo, string sortName, string sortOrder)
+        {
+            string nomArchivo = "";
+            if (string.IsNullOrEmpty(nombre)) nombre = null;
+
+            List<int> listaDominiosIds = dominioIds == null ? new List<int>() : dominioIds.Split('|').Select(Int32.Parse).ToList();
+            List<int> listaSubDominiosIds = subdominioIds == null ? new List<int>() : subdominioIds.Split('|').Select(Int32.Parse).ToList();
+            List<int> listaEstadoTecIds = estadoTecs == null ? new List<int>() : estadoTecs.Split('|').Select(Int32.Parse).ToList();
+            List<int> listaTipoTecIds = tipoTecIds == null ? new List<int>() : tipoTecIds.Split('|').Select(Int32.Parse).ToList();
+            List<int> listaEstadoObsIds = estObsIds == null ? new List<int>() : estObsIds.Split('|').Select(Int32.Parse).ToList();
+
+            var data = new ExportarData().ExportarReporteTecnologia(nombre, listaDominiosIds, listaSubDominiosIds, familiaId, estadoFecSop, casoUso, listaEstadoTecIds, aplica, codigo, dueno, equipo, listaTipoTecIds, listaEstadoObsIds, flagActivo, sortName, sortOrder);
+            nomArchivo = string.Format("ReporteTecnologiaTotal_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("ListarReporteTecnologia")]
+        [HttpPost]
+		[Authorize]
+		public IHttpActionResult PostListarReporteTecnologia(PaginacionTecSTD pag)
+        {
+            var totalRows = 0;
+            var registros = ServiceManager<TecnologiaDAO>.Provider.GetReporteTecnologia(pag.domIds,
+                                                                          pag.subdomIds,
+                                                                          pag.casoUso,
+                                                                          pag.nombre,
+                                                                          pag.estadoIds,
+                                                                          pag.famId,
+                                                                          pag.fecId,
+                                                                          pag.aplica,
+                                                                          pag.codigo,
+                                                                          pag.dueno,
+                                                                          pag.equipo,
+                                                                          pag.tipoTecIds,
+                                                                          pag.estObsIds,
+                                                                          pag.flagActivo,
+                                                                          pag.pageNumber,
+                                                                          pag.pageSize,
+                                                                          pag.sortName,
+                                                                          pag.sortOrder,
+                                                                          out totalRows);
+            if (registros == null)
+                return NotFound();
+
+            dynamic reader = new BootstrapTable<TecnologiaG>()
+            {
+                Total = totalRows,
+                Rows = registros
+            };
+
+            return Ok(reader);
+        }
+
+        [Route("ActualizarTipo")]
+        [HttpPost]
+        [Authorize]
+        public IHttpActionResult PostActualizarTipo(ActualizarTecnologia pag)
+        {
+            var retorno = ServiceManager<TecnologiaDAO>.Provider.ActualizarRetorno(pag);
+
+            dynamic reader = new EntidadRetorno()
+            {
+                CodigoRetorno = retorno.CodigoRetorno,
+                Descripcion = retorno.Descripcion
+            };
+
+            return Ok(reader);
+        }
+
+
+        // GET: api/Tecnologia/ObtenerTecnologiaEquivalencia/5
+        [Route("ListarTecnologiasEquivalentes")]
+        [HttpPost]
+		[Authorize]
+		public IHttpActionResult GetTecEquivalentesByTec(Paginacion pag)
+        {
+            var totalRows = 0;
+            var registros = ServiceManager<TecnologiaDAO>.Provider.GetTecEqByTec(pag.id, pag.pageNumber, pag.pageSize, pag.sortName, pag.sortOrder, out totalRows);
+            if (registros == null)
+                return NotFound();
+
+            dynamic reader = new BootstrapTable<TecnologiaEquivalenciaDTO>()
+            {
+                Total = totalRows,
+                Rows = registros
+            };
+
+            return Ok(reader);
+        }
+
+        // GET: api/Tecnologia/ObtenerTecnologia
+        [Route("ObtenerTecnologia")]
+        [HttpGet]
+		[Authorize]
+		public IHttpActionResult GetTec()
+        {
+            var listTec = ServiceManager<TecnologiaDAO>.Provider.GetTec();
+            if (listTec == null)
+                return NotFound();
+
+            return Ok(listTec);
+        }
+
+        // POST: api/Tecnologia
+        [Route("AsociarTecnologiaEquivalencia")]
+        [HttpPost]
+		[Authorize]
+		public IHttpActionResult PostAsocTecnologiasEq(ParametroTecEq request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var retorno = ServiceManager<TecnologiaDAO>.Provider.AsociarTecEq(request.tecId, request.Equivalencia, request.Usuario);
+
+            return Ok(retorno);
+        }
+        #endregion
+
+        [Route("GetTecnologiaByClave")]
+        [HttpGet]
+		[Authorize]
+		public HttpResponseMessage GetTecnologiaByClave(string filtro, string subdominioIds = null, int? id = null)
+        {
+            HttpResponseMessage response = null;
+            var listTec = ServiceManager<TecnologiaDAO>.Provider.GetAllTecnologiaByClaveTecnologia(filtro);
+            response = Request.CreateResponse(HttpStatusCode.OK, listTec);
+            return response;
+        }
+
+        [Route("GetTecnologiaEstandarByClave")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetTecnologiaEstandarByClave(string filtro, bool? getAll)
+        {
+            HttpResponseMessage response = null;
+            var dataResp = ServiceManager<TecnologiaDAO>.Provider.GetTecnologiaEstandarByClaveTecnologia(filtro, getAll);
+            response = Request.CreateResponse(HttpStatusCode.OK, dataResp);
+            return response;
+        }
+
+        [Route("GetTecnologiaAutocompleteById")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetTecnologiaAutocompleteById(int Id)
+        {
+            HttpResponseMessage response = null;
+            var item = ServiceManager<TecnologiaDAO>.Provider.GetTecnologiaById(Id);
+            response = Request.CreateResponse(HttpStatusCode.OK, item);
+            return response;
+        }
+
+        [Route("GetTecnologiaArquetipoByClave")]
+        [HttpGet]
+		[Authorize]
+		public HttpResponseMessage GetTecnologiaArquetipoByClave(string filtro)
+        {
+            HttpResponseMessage response = null;
+            var registros = ServiceManager<TecnologiaDAO>.Provider.GetTecnologiaArquetipoByClaveTecnologia(filtro);
+            response = Request.CreateResponse(HttpStatusCode.OK, registros);
+            return response;
+        }
+
+        [Route("GetTecnologiaByClaveById")]
+        [HttpPost]
+		[Authorize]
+		public HttpResponseMessage GetTecnologiaByClaveById(PostAutocomplete obj)
+        {
+            HttpResponseMessage response = null;
+            var listTec = ServiceManager<TecnologiaDAO>.Provider.GetAllTecnologiaByClaveTecnologia(obj.filtro, obj.id, obj.dominioIds, obj.subDominioIds);
+            response = Request.CreateResponse(HttpStatusCode.OK, listTec);
+            return response;
+        }
+
+        [Route("GetTecnologiaByFiltro")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetTecnologiaByFiltro(string filtro)
+        {
+            HttpResponseMessage response = null;
+            var listTec = ServiceManager<TecnologiaDAO>.Provider.GetAllTecnologia(filtro);
+            response = Request.CreateResponse(HttpStatusCode.OK, listTec);
+            return response;
+        }
+
+        [Route("GetTecnologiaEstandarByFiltro")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetTecnologiaEstandarByFiltro(string filtro, string subdominioList, string soPcUsuarioList = null)
+        {
+            HttpResponseMessage response = null;
+            var lista = ServiceManager<TecnologiaDAO>.Provider.GetTecnologiaEstandarByFiltro(filtro, subdominioList, soPcUsuarioList);
+            response = Request.CreateResponse(HttpStatusCode.OK, lista);
+            return response;
+        }
+
+        [Route("GetTecnologiaForBusqueda")]
+        [HttpGet]
+		[Authorize]
+		public HttpResponseMessage GetTecnologiaForBusqueda(string filtro, int? id, bool flagActivo)
+        {
+            HttpResponseMessage response = null;
+            var lista = ServiceManager<TecnologiaDAO>.Provider.GetTecnologiaForBusqueda(filtro, id, flagActivo);
+            response = Request.CreateResponse(HttpStatusCode.OK, lista);
+            return response;
+        }
+
+        [Route("ExisteTecnologia")]
+        [HttpGet]
+		[Authorize]
+		public HttpResponseMessage GetExisteTecnologia(int Id)
+        {
+            HttpResponseMessage response = null;
+            bool estado = ServiceManager<TecnologiaDAO>.Provider.ExisteTecnologiaById(Id);
+            response = Request.CreateResponse(HttpStatusCode.OK, estado);
+            return response;
+        }
+
+        [Route("ExisteEquivalenciaTecnologia")]
+        [HttpGet]
+		[Authorize]
+		public HttpResponseMessage GetExisteEquivalenciaTecnologia(int Id)
+        {
+            HttpResponseMessage response = null;
+            bool estado = ServiceManager<TecnologiaDAO>.Provider.ExisteEquivalenciaByTecnologiaId(Id);
+            response = Request.CreateResponse(HttpStatusCode.OK, estado);
+            return response;
+        }
+
+        [Route("ExisteRelacionByTecnologia")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetExisteRelacionByTecnologia(int Id)
+        {
+            HttpResponseMessage response = null;
+            bool estado = ServiceManager<TecnologiaDAO>.Provider.ExisteRelacionByTecnologiaId(Id);
+            response = Request.CreateResponse(HttpStatusCode.OK, estado);
+            return response;
+        }
+
+        [Route("CambiarFlagEquivalencia")]
+        [HttpPost]
+		[Authorize]
+		public HttpResponseMessage PostCambiarFlagExperto(ObjCambioEstado request)
+        {
+            HttpResponseMessage response = null;
+            bool retorno = ServiceManager<TecnologiaDAO>.Provider.CambiarFlagEquivalencia(int.Parse(request.Id), request.Usuario);
+            response = Request.CreateResponse(HttpStatusCode.OK, retorno);
+            return response;
+        }
+
+        [Route("ExisteClaveTecnologia")]
+        [HttpGet]
+		[Authorize]
+		public HttpResponseMessage GetExisteClaveTecnologia(string clave, int? id, int? flagActivo)
+        {
+            HttpResponseMessage response = null;
+            if (string.IsNullOrEmpty(clave)) clave = null;
+            bool estado = ServiceManager<TecnologiaDAO>.Provider.ExisteClaveTecnologia(clave, id, flagActivo);
+            response = Request.CreateResponse(HttpStatusCode.OK, estado);
+            return response;
+        }
+
+        [Route("GetTecnologiaByFiltroById")]
+        [HttpPost]
+		[Authorize]
+		public HttpResponseMessage PostTecnologiaByFiltroById(ObjTecnologiaVinculada obj)
+        {
+            HttpResponseMessage response = null;
+            var registros = ServiceManager<TecnologiaDAO>.Provider.GetAllTecnologia(obj.Filtro, obj.Id, obj.IdsTec);
+            response = Request.CreateResponse(HttpStatusCode.OK, registros);
+            return response;
+        }
+
+        [Route("ExportarEquivalenciaGeneral")]
+        [HttpGet]
+        public HttpResponseMessage GetExportarEquivalenciaGeneral(string sortName, string sortOrder)
+        {
+            string nomArchivo = "";
+            //if (string.IsNullOrEmpty(nombre)) nombre = null;
+            var data = new ExportarData().ExportarTecnologiasEquivalentes(sortName, sortOrder);
+            nomArchivo = string.Format("ListaEquivalenciasTecnologias_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("GetSistemasOperativoByFiltro")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetSistemasOperativoByFiltro(string filtro)
+        {
+            HttpResponseMessage response = null;
+            var data = ServiceManager<TecnologiaDAO>.Provider.GetSistemasOperativoByFiltro(filtro);
+            response = Request.CreateResponse(HttpStatusCode.OK, data);
+            return response;
+        }
+
+        [Route("GetTecnologiasXAplicacionByCodigoAPT")]
+        [HttpGet]
+		[Authorize]
+		public HttpResponseMessage GetTecnologiasXAplicacion(string codigoAPT, int pageNumber, int pageSize, string sortName, string sortOrder)
+        {
+            HttpResponseMessage response = null;
+            int totalRows = 0;
+
+            var paramProyeccion1 = ServiceManager<ParametroDAO>.Provider.ObtenerParametro("NRO_MESES_PROYECCIONES");
+            var proyeccionMeses1 = paramProyeccion1 != null ? paramProyeccion1.Valor : "12";
+            var paramProyeccion2 = ServiceManager<ParametroDAO>.Provider.ObtenerParametro("NRO_MESES_PROYECCIONES_2");
+            var proyeccionMeses2 = paramProyeccion2 != null ? paramProyeccion2.Valor : "24";
+
+            var dataRpta = new DetalleEquipoDataTecnologias();
+            dataRpta.Proyeccion1Meses = proyeccionMeses1;
+            dataRpta.Proyeccion2Meses = proyeccionMeses2;
+
+            var registros = ServiceManager<TecnologiaDAO>.Provider.GetTecnologiasXAplicacionByCodigoAPT(codigoAPT, pageNumber, pageSize, sortName, sortOrder, out totalRows);
+            if (registros != null)
+            {
+                dataRpta.Tecnologias = new BootstrapTable<TecnologiaDTO>() { Rows = registros, Total = totalRows };
+
+                response = Request.CreateResponse(HttpStatusCode.OK, dataRpta);
+            }
+            return response;
+        }
+
+        [Route("TecnologiaVinculadaXTecnologiaId")]
+        [HttpGet]
+		[Authorize]
+		public IHttpActionResult GetTecnologiaVinculadaXTecnologiaId(int tecnologiaId, int pageNumber, int pageSize, string sortName, string sortOrder)
+        {
+            var totalRows = 0;
+            var registros = ServiceManager<TecnologiaDAO>.Provider.GetTecnologiaVinculadaXTecnologiaId(tecnologiaId, pageNumber, pageSize, sortName, sortOrder, out totalRows);
+            if (registros == null)
+                return NotFound();
+
+            dynamic reader = new BootstrapTable<TecnologiaG>() { Total = totalRows, Rows = registros };
+            return Ok(reader);
+        }
+
+        [Route("TecnologiaEstandar")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetTecnologiaEstandar(string subdominioIds = null, string dominiosIds = null)
+        {
+            HttpResponseMessage response = null;
+            var registros = ServiceManager<TecnologiaDAO>.Provider.GetTecnologiaEstandar(subdominioIds, dominiosIds);
+            response = Request.CreateResponse(HttpStatusCode.OK, registros);
+            return response;
+        }
+
+        [Route("TecnologiaEstandar/Listado")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetEstandarTecnologia(
+            string tecnologia,
+            string tipoTecnologiaIds,
+            string estadoTecnologiaIds,
+            bool getAll,
+            string subdominioIds = null, 
+            string dominiosIds = null,
+            string aplicaIds = null,
+            string compatibilidadSOIds = null,
+            string compatibilidadCloudIds = null)
+        {
+            HttpResponseMessage response = null;
+            var registros = ServiceManager<TecnologiaDAO>.Provider.GetTecnologiaEstandar_2(
+                tecnologia,
+                tipoTecnologiaIds,
+                estadoTecnologiaIds,
+                getAll,
+                subdominioIds,
+                dominiosIds,
+                aplicaIds,
+                compatibilidadSOIds,
+                compatibilidadCloudIds);
+            response = Request.CreateResponse(HttpStatusCode.OK, registros);
+            return response;
+        }
+
+        [Route("TecnologiaEstandar/ListarCombos")]
+        [HttpPost]
+        [Authorize]
+        public HttpResponseMessage PostListarCombosTecnologiaEstandar()
+        {
+            HttpResponseMessage response = null;
+            var lDominio = ServiceManager<DominioDAO>.Provider.GetAllDominioByFiltro(null);
+            var lTipos = ServiceManager<TipoDAO>.Provider.GetAllTipoByFiltro(null);
+            var listEstadoObs = Utilitarios.EnumToList<ETecnologiaEstado>();
+
+            var parametro = ServiceManager<ParametroDAO>.Provider.ObtenerParametro("URL_PREGUNTAS_FRECUENTES");
+            var dataPar = parametro != null ? parametro.Valor : "#";
+
+            var parametro2 = ServiceManager<ParametroDAO>.Provider.ObtenerParametro("FILTRO_TIPO_ESTANDAR_TEC");
+            var dataPar2 = parametro2 != null ? parametro2.Valor : "1|2";
+
+            var paramCompatibilidadSO = ServiceManager<ParametroDAO>.Provider.ObtenerParametro("GESTION_TECNOLOGIAS_COMPATIBILIDAD_SO");
+            var paramCompatibilidadCloud = ServiceManager<ParametroDAO>.Provider.ObtenerParametro("GESTION_TECNOLOGIAS_PROVEEDOR_CLOUD");
+
+            var listCompatibilidadSO = (paramCompatibilidadSO.Valor ?? "").Split('|');
+            var listCompatibilidadCloud = (paramCompatibilidadCloud.Valor ?? "").Split('|');
+            var lAplicaTecnologia = Utilitarios.EnumToList<EAplicaATecnologia>().Select(x => new { Id = Utilitarios.GetEnumDescription2(x), Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList();
+
+            var dataRpta = new
+            {
+                Dominio = lDominio,
+                TipoTecnologia = lTipos,
+                EstadoObs = listEstadoObs.Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }),
+                UrlFAQ = dataPar,
+                FiltroTipoTecnologia = dataPar2,
+                CompatibilidadSO = listCompatibilidadSO,
+                CompatibilidadCloud = listCompatibilidadCloud,
+                PlataformaAplica = lAplicaTecnologia
+            };
+
+            response = Request.CreateResponse(HttpStatusCode.OK, dataRpta);
+            return response;
+        }
+
+        [Route("TecnologiaEstandar/GetById")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetTecnologiaEstandarById(int id)
+        {
+            HttpResponseMessage response = null;
+            var retorno = ServiceManager<TecnologiaDAO>.Provider.GetTecnologiaEstandarById(id);
+            response = Request.CreateResponse(HttpStatusCode.OK, retorno);
+
+            return response;
+        }
+
+        [Route("TecnologiaEstandar/Exportar")]
+        [HttpGet]
+        public HttpResponseMessage ExportarTecnologiaEstandar(string subdominioIds, string dominiosIds)
+        {
+            string fileName = "";
+            subdominioIds = !string.IsNullOrEmpty(subdominioIds) ? subdominioIds : "";
+            dominiosIds = !string.IsNullOrEmpty(dominiosIds) ? dominiosIds : "";
+            var data = new ExportarData().ExportarTecnologiaEstandar(subdominioIds, dominiosIds);
+            fileName = string.Format("ListaTecnologíasEstandar_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = fileName;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("TecnologiaEstandar/Exportar_2")]
+        [HttpGet]
+        public HttpResponseMessage ExportarEstandarTecnologia(string subdominioIds, string dominiosIds, string tipoTecnologiaIds, string estadoTecnologiaIds, string tecnologia, bool getAll, string aplicaIds, string compatibilidadSOIds, string compatibilidadCloudIds)
+        {
+            subdominioIds = !string.IsNullOrEmpty(subdominioIds) ? subdominioIds : string.Empty;
+            dominiosIds = !string.IsNullOrEmpty(dominiosIds) ? dominiosIds : string.Empty;
+            tecnologia = !string.IsNullOrEmpty(tecnologia) ? tecnologia : string.Empty;
+
+            var data = new ExportarData().ExportarTecnologiaEstandar_2(subdominioIds, dominiosIds, tipoTecnologiaIds, estadoTecnologiaIds, tecnologia, getAll, aplicaIds, compatibilidadSOIds, compatibilidadCloudIds);
+            var fileName = string.Format("ListaTecnologíasEstandar_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = fileName;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("MigrarEquivalenciasTecnologia")]
+        [HttpGet]
+		[Authorize]
+		public HttpResponseMessage GetMigrarEquivalenciasTecnologia(int TecnologiaEmisorId, int TecnologiaReceptorId, string Usuario)
+        {
+            HttpResponseMessage response = null;
+            bool estado = ServiceManager<TecnologiaDAO>.Provider.MigrarEquivalenciasTecnologia(TecnologiaEmisorId, TecnologiaReceptorId, Usuario);
+            response = Request.CreateResponse(HttpStatusCode.OK, estado);
+            return response;
+        }
+
+        [Route("MigrarDataTecnologia")]
+        [HttpGet]
+		[Authorize]
+		public HttpResponseMessage GetMigrarInfoTecnologia(int TecnologiaEmisorId, int TecnologiaReceptorId, string Usuario)
+        {
+            HttpResponseMessage response = null;
+            bool estado = ServiceManager<TecnologiaDAO>.Provider.MigrarDataTecnologia(TecnologiaEmisorId, TecnologiaReceptorId, Usuario);
+            response = Request.CreateResponse(HttpStatusCode.OK, estado);
+            return response;
+        }
+
+        [Route("ExportarTecnologiasXAplicacionByCodigoAPT")]
+        [HttpGet]
+        public HttpResponseMessage ExportarTecnologiasXAplicacionByCodigoAPT(string codigoAPT, string sortName, string sortOrder)
+        {
+            string fileName = "";
+            var data = new ExportarData().ExportarTecnologiasByAplicacion(codigoAPT, sortName, sortOrder);
+            fileName = string.Format("ListaTecnologíasXAplicación_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = fileName;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("Exportar/Actualizar")]
+        [HttpGet]
+        public HttpResponseMessage GetExportarGestionTecnologiasActualizar()
+        {
+            string filename = "";
+
+            var data = new ExportarData().ExportarGestionTecnologiaActualizar();
+            filename = "ListadoTecnologia";
+            filename = string.Format("{0}_{1}.xlsx", filename, DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = filename;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("ActualizarTecnologias")]
+        [HttpPost]
+        [Authorize]
+        public HttpResponseMessage PostCargarEquipos()
+        {
+            try
+            {
+                HttpResponseMessage response = null;
+                HttpRequest request = HttpContext.Current.Request;
+
+                if (request.Files.Count > 0)
+                {
+                    HttpPostedFile clientFile = null;
+                    clientFile = request.Files["File"];
+                    var usuario = request.Form["Usuario"].ToString();
+                    EstadoCargaMasiva estadoCM = null;
+                    var inputStream = clientFile.InputStream;
+                    var nombre = clientFile.FileName;
+                    var extension = Path.GetExtension(nombre);
+
+                    estadoCM = new CargaData().CargaMasivaTecnologias(extension, inputStream, usuario);
+                    response = Request.CreateResponse(HttpStatusCode.OK, estadoCM);
+                }
+                return response;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+
+
+        [Route("EvolucionEquipo/Instalaciones")]
+        [HttpPost]
+        [Authorize]
+        public HttpResponseMessage GetReporteEvolucionInstalacionTecnologias(PaginaEvolucionInstalaciones paramsDatos)
+        {
+            HttpResponseMessage response = null;
+            var data = ServiceManager<ReporteDAO>.Provider.ReporteEvolucionInstalacionTecnologias(paramsDatos.TipoEquipoToString, paramsDatos.SubsidariasToString,paramsDatos.Fecha, paramsDatos.NroMeses, paramsDatos.FlagAgruparFamilia, paramsDatos.IdTecnologia, paramsDatos.Fabricante, paramsDatos.NombreTecnologia);
+            response = Request.CreateResponse(HttpStatusCode.OK, data);
+            return response;
+        }
+
+
+        [Route("EvolucionEquipo/Instalaciones/ListarCombos")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage GetFiltrosEvolucionInstalacionEquipos()
+        {
+            HttpResponseMessage response = null;
+            FiltrosIndicadoresGerencialEquipo dataRpta = new FiltrosIndicadoresGerencialEquipo();
+
+            dataRpta = ServiceManager<EquipoDAO>.Provider.ListFiltrosEvolucionInstalacionEquipos();
+
+
+            var nroMeses = Settings.Get<string>("Indicadores.Equipos.NroMeses");
+           var arrMeses = nroMeses.Split('|');
+
+            var listaMeses = new List<CustomAutocomplete>();
+            foreach (var nroMes in arrMeses)
+            {
+            
+                listaMeses.Add(new CustomAutocomplete { Id = nroMes, Descripcion = string.Format("{0} {1}", nroMes, nroMes == "1" ? "mes" : "meses") });
+            }
+            dataRpta.ListaPeriodoTiempo = listaMeses;
+
+            response = Request.CreateResponse(HttpStatusCode.OK, dataRpta);
+            return response;
+        }
+
+        // POST: api/Tecnologia
+        [Route("New")]
+        [HttpPost]
+        [ResponseType(typeof(TecnologiaDTO))]
+        [Authorize]
+        public IHttpActionResult PostNewTecnologia(TecnologiaDTO tecDTO)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            int IdTec = ServiceManager<TecnologiaDAO>.Provider.AddOrEditNewTecnologia(tecDTO);
+
+            if (IdTec == 0)
+                return NotFound();
+
+            return Ok(IdTec);
+        }
+
+        // POST: api/Tecnologia/ListadoNew
+        [Route("ListadoNew")]
+        [HttpPost]
+        [Authorize]
+        public IHttpActionResult PostListNewTec(PaginacionNewTec pag)
+        {
+            var totalRows = 0;
+            var registros = ServiceManager<TecnologiaDAO>.Provider.GetNewTec(pag.prodId,
+                                                                          pag.domIds,
+                                                                          pag.subdomIds,
+                                                                          pag.nombre,
+                                                                          pag.aplica,
+                                                                          pag.codigo,
+                                                                          pag.dueno,
+                                                                          //pag.equipo,
+                                                                          pag.tipoTecIds,
+                                                                          pag.estObsIds,
+                                                                          pag.pageNumber,
+                                                                          pag.pageSize,
+                                                                          pag.sortName,
+                                                                          pag.sortOrder,
+                                                                          out totalRows);
+            if (registros == null)
+                return NotFound();
+
+            dynamic reader = new BootstrapTable<TecnologiaG>()
+            {
+                Total = totalRows,
+                Rows = registros
+            };
+
+            return Ok(reader);
+        }
+
+        [Route("ExportarConsolidadoNew")]
+        [HttpGet]
+        public HttpResponseMessage GetExportarConsolidadoNewTec(string nombre, string dominioIds, string subdominioIds, int? productoId, string aplica, string codigo, string dueno, string tipoTecIds, string estObsIds, string sortName, string sortOrder)
+        {
+            string nomArchivo = "";
+            if (string.IsNullOrEmpty(nombre)) nombre = null;
+
+            var listaDominiosIds = dominioIds == null ? new List<int>() : dominioIds.Split('|').Select(Int32.Parse).ToList();
+            var listaSubDominiosIds = subdominioIds == null ? new List<int>() : subdominioIds.Split('|').Select(Int32.Parse).ToList();
+            var listaTipoTecIds = tipoTecIds == null ? new List<int>() : tipoTecIds.Split('|').Select(Int32.Parse).ToList();
+            var listaEstadoObsIds = estObsIds == null ? new List<int>() : estObsIds.Split('|').Select(Int32.Parse).ToList();
+
+            var data = new ExportarData().ExportarConsolidadoNewTecnologia(nombre, listaDominiosIds, listaSubDominiosIds, productoId, aplica, codigo, dueno, listaTipoTecIds, listaEstadoObsIds, sortName, sortOrder);
+            nomArchivo = string.Format("ListaTecnologiaConsolidado_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("ExportarDetalladoNew")]
+        [HttpGet]
+        public HttpResponseMessage GetExportarDetalladoNewTec(string nombre, string dominioIds, string subdominioIds, int? productoId, string aplica, string codigo, string dueno, string tipoTecIds, string estObsIds, string sortName, string sortOrder)
+        {
+            string nomArchivo = "";
+            if (string.IsNullOrEmpty(nombre)) nombre = null;
+
+            var listaDominiosIds = dominioIds == null ? new List<int>() : dominioIds.Split('|').Select(Int32.Parse).ToList();
+            var listaSubDominiosIds = subdominioIds == null ? new List<int>() : subdominioIds.Split('|').Select(Int32.Parse).ToList();
+            var listaTipoTecIds = tipoTecIds == null ? new List<int>() : tipoTecIds.Split('|').Select(Int32.Parse).ToList();
+            var listaEstadoObsIds = estObsIds == null ? new List<int>() : estObsIds.Split('|').Select(Int32.Parse).ToList();
+
+            var data = new ExportarData().ExportarDetalladoNewTecnologia(nombre, listaDominiosIds, listaSubDominiosIds, productoId, aplica, codigo, dueno, listaTipoTecIds, listaEstadoObsIds, sortName, sortOrder);
+            nomArchivo = string.Format("ListaTecnologiaDetallado_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        // GET: api/Tecnologia/5
+        [Route("New/{id:int}")]
+        [ResponseType(typeof(TecnologiaDTO))]
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult GetNewTecById(int id, bool withAutorizadores = false, bool withArquetipos = false, bool withAplicaciones = false, bool withEquivalencias = false)
+        {
+            var objTec = ServiceManager<TecnologiaDAO>.Provider.GetNewTecById(id, withAutorizadores, withArquetipos, withAplicaciones, withEquivalencias);
+            if (objTec == null)
+                return NotFound();
+
+            return Ok(objTec);
+        }
+
+        #region Tecnologia Por Producto
+        [Route("ListadoByProducto")]
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult PostListTecnologiaByProducto(int productoId)
+        {
+            var registros = ServiceManager<TecnologiaDAO>.Provider.GetTecnologiaByProducto(productoId);
+
+            if (registros == null)
+                return NotFound();
+
+            return Ok(registros);
+        }
+
+        [Route("ListadoByProductoWithPagination")]
+        [HttpPost]
+        [Authorize]
+        public IHttpActionResult PostListTecnologiaByProducto(Paginacion pag)
+        {
+            int totalRows;
+            var registros = ServiceManager<TecnologiaDAO>.Provider.GetTecnologiaByProductoWithPagination(pag.productoId,
+                                                                          pag.pageNumber,
+                                                                          pag.pageSize,
+                                                                          pag.sortName,
+                                                                          pag.sortOrder,
+                                                                          out totalRows);
+
+            if (registros == null)
+                return NotFound();
+
+            dynamic reader = new BootstrapTable<TecnologiaDTO>()
+            {
+                Total = totalRows,
+                Rows = registros
+            };
+
+            return Ok(reader);
+        }
+
+        // POST: api/Tecnologia
+        [Route("FromProducto")]
+        [HttpPost]
+        [ResponseType(typeof(TecnologiaDTO))]
+        [Authorize]
+        public IHttpActionResult PostTecnologiaFromProducto(TecnologiaDTO tecDTO)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            int IdTec = ServiceManager<TecnologiaDAO>.Provider.EditTecnologiaFromProducto(tecDTO);
+
+            if (IdTec == 0)
+                return NotFound();
+
+            return Ok(IdTec);
+        }
+
+        [Route("Eliminar/{id:int}")]
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult DeleteProductoTecnologiaById(int id, string userName)
+        {
+            bool isDelete = ServiceManager<TecnologiaDAO>.Provider.DeleteTecnologiaById(id, userName);
+
+            return Ok(isDelete);
+        }
+
+        #endregion
+
+        #region Producto Tecnología Aplicación
+        [Route("TecnologiaAplicacion/Listado")]
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult PostListAplicacionesTecnologia(int tecnologiaId)
+        {
+            var registros = ServiceManager<TecnologiaDAO>.Provider.GetTecnologiaAplicaciones(tecnologiaId);
+
+            if (registros == null)
+                return NotFound();
+
+            return Ok(registros);
+        }
+
+        [Route("TecnologiaAplicacion/ExportarListado")]
+        [HttpGet]
+        public HttpResponseMessage PostExportarListAplicacionesTecnologia(int tecnologiaId, string tecnologiaStr)
+        {
+            string nomArchivo = string.Format("ListaAplicacionesXTecnologia_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            var data = new ExportarData().ExportarListAplicacionesTecnologia(tecnologiaId, tecnologiaStr);
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("TecnologiaAplicacion/Eliminar/{id:int}/{userName}")]
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult DeleteProductoTecnologiaAplicacionById(int id, string userName)
+        {
+            bool isDelete = ServiceManager<TecnologiaDAO>.Provider.DeleteTecnologiaAplicacionById(id, userName);
+
+            return Ok(isDelete);
+        }
+
+        [Route("TecnologiaAplicacion/GuardarMasivo")]
+        [HttpPost]
+        [Authorize]
+        public IHttpActionResult GuardarMasivoProductoTecnologiaAplicacion(TecnologiaDTO productoTecnologiaDTO)
+        {
+            productoTecnologiaDTO.ItemsRemoveAppId = productoTecnologiaDTO.ItemsRemoveAppId ?? new List<int>();
+
+            bool isDelete = ServiceManager<TecnologiaDAO>.Provider.GuardarMasivoTecnologiaAplicacion(productoTecnologiaDTO.ListAplicaciones, productoTecnologiaDTO.ItemsRemoveAppId.ToArray(), productoTecnologiaDTO.UsuarioModificacion);
+
+            return Ok(isDelete);
+        }
+        #endregion
+
+        #region Motivo
+        [Route("ExisteMotivoRelacionado")]
+        [HttpGet]
+        [Authorize]
+        public HttpResponseMessage PostExisteMotivoRelacionado(int motivoId)
+        {
+            HttpResponseMessage response = null;
+            var retorno = ServiceManager<TecnologiaDAO>.Provider.ExisteTecnologiaAsociadaAlMotivo(motivoId);
+            response = Request.CreateResponse(HttpStatusCode.OK, retorno);
+            return response;
+        }
+        #endregion
+
+        #region Tecnología Owner
+        [Route("TecnologiaOwner/ListarCombos")]
+        [HttpPost]
+        [Authorize]
+        public HttpResponseMessage PostListCombosTecnologiaOwner()
+        {
+            HttpResponseMessage response = null;
+
+            var listDominio = ServiceManager<DominioDAO>.Provider.GetAllDominioByFiltro(null);
+            var listSubDominio = ServiceManager<SubdominioDAO>.Provider.GetAllSubdominioByFiltro(null);
+
+            var dataRpta = new
+            {
+                Dominio = listDominio,
+                SubDominio = listSubDominio,
+            };
+
+            response = Request.CreateResponse(HttpStatusCode.OK, dataRpta);
+            return response;
+        }
+
+        [Route("ListadoXOwner")]
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult PostListTecnologiaOwner(string correo, int perfilId, string dominioIds, string subDominioIds, string productoStr, int? tribuCoeId, int? squadId, bool? flagTribuCoe, int pageNumber, int pageSize, string sortName, string sortOrder)
+        {
+            var registros = ServiceManager<TecnologiaDAO>.Provider.BuscarTecnologiaXOwner(correo, perfilId, dominioIds, subDominioIds, productoStr, tribuCoeId, squadId, flagTribuCoe, pageNumber, pageSize, sortName, sortOrder, out int totalRows);
+
+            if (registros == null)
+                return NotFound();
+
+            var reader = new BootstrapTable<TecnologiaOwnerDto>()
+            {
+                Total = totalRows,
+                Rows = registros
+            };
+
+            return Ok(reader);
+        }
+
+        [Route("ExportarListadoXOwner")]
+        [HttpGet]
+        public HttpResponseMessage PostExportarListTecnologiaOwner(string correo, int perfilId, string dominioIds, string subDominioIds, string productoStr, int? tribuCoeId, int? squadId, bool? flagTribuCoe, string sortName, string sortOrder)
+        {
+            string nomArchivo = string.Format("ListaTecnologiasPorOwner_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            var data = new ExportarData().ExportarListTecnologiaOwner(correo, perfilId, dominioIds, subDominioIds, productoStr, tribuCoeId, squadId, flagTribuCoe, sortName, sortOrder);
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+
+        [Route("ListadoXOwnerProducto")]
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult PostListTecnologiaOwnerProducto(string correo, int perfilId, int productoId)
+        {
+            var registros = ServiceManager<TecnologiaDAO>.Provider.BuscarTecnologiaXOwnerProducto(correo, perfilId, productoId);
+
+            if (registros == null)
+                return NotFound();
+
+            return Ok(registros);
+        }
+
+        [Route("ExportarListadoXOwnerProducto")]
+        [HttpGet]
+        public HttpResponseMessage PostExportarListadoXOwnerProducto(string correo, int perfilId, int productoId, string productoStr)
+        {
+            string nomArchivo = string.Format("ListaTecnologias_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            var data = new ExportarData().ExportarListadoXOwnerProducto(correo, perfilId, productoId, productoStr);
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+        #endregion
+
+        #region Tecnología Owner Consolidado
+        [Route("TecnologiaOwnerConsolidadoObsolescencia/ListarCombos")]
+        [HttpPost]
+        [Authorize]
+        public HttpResponseMessage PostListCombosTecnologiaOwnerConsolidadoObsolescencia()
+        {
+            HttpResponseMessage response = null;
+
+            var listDominio = ServiceManager<DominioDAO>.Provider.GetAllDominioByFiltro(null);
+            var listSubDominio = ServiceManager<SubdominioDAO>.Provider.GetAllSubdominioByFiltro(null);
+            var listEstado = Utilitarios.EnumToList<ETecnologiaEstado>().Select(x => new { Id = (int)x, Descripcion = Utilitarios.GetEnumDescription2(x) }).ToList();
+
+            var dataRpta = new
+            {
+                Dominio = listDominio,
+                SubDominio = listSubDominio,
+                Estado = listEstado
+            };
+
+            response = Request.CreateResponse(HttpStatusCode.OK, dataRpta);
+            return response;
+        }
+
+        [Route("ListadoConsolidadoObsolescenciaXNivel")]
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult GetListarTecnologiaOwnerConsolidadoObsolescencia(string dominioIds, string subDominioIds, string productoStr, string tecnologiaStr, string ownerStr, string squadId, int nivel, string ownerParentIds = null)
+        {
+            var registros = ServiceManager<TecnologiaDAO>.Provider.ListarTecnologiaOwnerConsolidadoObsolescencia(dominioIds, subDominioIds, productoStr, tecnologiaStr, ownerStr, squadId, nivel, ownerParentIds);
+
+            if (registros == null)
+                return NotFound();
+
+            return Ok(registros);
+        }
+
+        [Route("ExportarListadoConsolidadoObsolescencia")]
+        [HttpGet]
+        public HttpResponseMessage GetExportarListarTecnologiaOwnerConsolidadoObsolescencia(string dominioIds, string subDominioIds, string productoStr, string tecnologiaStr, string ownerStr, string squadId)
+        {
+            string nomArchivo = string.Format("ListaTecnologiasPorOwnerConsolidadoObsolescencia_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            var data = new ExportarData().ExportarListarTecnologiaOwnerConsolidadoObsolescencia(dominioIds, subDominioIds, productoStr, tecnologiaStr, ownerStr, squadId);
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+        #endregion
+
+        #region Tecnología SoportadoPor Consolidado
+        [Route("TecnologiaSoportadoPorConsolidadoObsolescencia/ListarCombos")]
+        [HttpPost]
+        [Authorize]
+        public HttpResponseMessage PostListCombosTecnologiaSoportadoPorConsolidadoObsolescencia()
+        {
+            HttpResponseMessage response = null;
+
+            var listDominio = ServiceManager<DominioDAO>.Provider.GetAllDominioByFiltro(null);
+            var listSubDominio = ServiceManager<SubdominioDAO>.Provider.GetAllSubdominioByFiltro(null);
+
+            var dataRpta = new
+            {
+                Dominio = listDominio,
+                SubDominio = listSubDominio
+            };
+
+            response = Request.CreateResponse(HttpStatusCode.OK, dataRpta);
+            return response;
+        }
+
+        [Route("ListadoConsolidadoSoportadoPorObsolescenciaXNivel")]
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult GetListarTecnologiaSoportadoPorConsolidadoObsolescencia(string correoOwner, int perfilId, string dominioIds, string subDominioIds, string aplicacionStr, string gestionadoPor, int nivel, string soportadoPorParents = null)
+        {
+            var registros = ServiceManager<TecnologiaDAO>.Provider.ListarTecnologiaSoportadoPorConsolidadoObsolescencia(correoOwner, perfilId, dominioIds, subDominioIds, aplicacionStr, gestionadoPor, nivel, soportadoPorParents);
+
+            if (registros == null)
+                return NotFound();
+
+            return Ok(registros);
+        }
+
+        [Route("ExportarListadoConsolidadoSoportadoPorObsolescencia")]
+        [HttpGet]
+        public HttpResponseMessage GetExportarListarTecnologiaSoportadoPorConsolidadoObsolescencia(string correoOwner, int perfilId, string dominioIds, string subDominioIds, string aplicacionStr, string gestionadoPor)
+        {
+            string nomArchivo = string.Format("ListaTecnologiasPorSoportadoPorConsolidadoObsolescencia_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            var data = new ExportarData().ExportarListarTecnologiaSoportadoPorConsolidadoObsolescencia(correoOwner, perfilId, dominioIds, subDominioIds, aplicacionStr, gestionadoPor);
+
+            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
+            httpResponseMessage.Content = new ByteArrayContent(data);
+            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            httpResponseMessage.Content.Headers.ContentDisposition.FileName = nomArchivo;
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            return httpResponseMessage;
+        }
+        #endregion
+    }
+
+}

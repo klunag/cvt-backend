@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="c32d8bbd60064daeb9a13fbb5719fb1a" Name="Diagram1" ZoomLevel="59">
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__AlertaPro__Alert__30AE302A" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Notificacion_TN" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Alerta" Width="1.5" PointX="17" PointY="14.375" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.AlertaDetalle" Width="1.5" PointX="19.25" PointY="12.5" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.AlertaProgramacion" Width="1.5" PointX="19.25" PointY="15.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.AplicacionExpertos" Width="1.5" PointX="21" PointY="8.25" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.AplicacionVinculada" Width="1.5" PointX="0.75" PointY="2.125" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ArchivosCVT" Width="1.5" PointX="7.5" PointY="34.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.AutorizadorTecnologia" Width="1.5" PointX="9.75" PointY="25.375" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Cluster" Width="1.5" PointX="0.75" PointY="18.25" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Entorno" Width="1.5" PointX="3" PointY="22.875" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.EquipoConfiguracion" Width="1.5" PointX="10.375" PointY="39.125" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.EquipoTecnologia" Width="1.5" PointX="9.75" PointY="17.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Excepcion" Width="1.5" PointX="9.75" PointY="13" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Familia" Width="1.5" PointX="5.25" PointY="29.875" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Parametro" Width="1.5" PointX="0.75" PointY="6.125" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Proceso" Width="1.5" PointX="0.75" PointY="10.125" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Relevancia" Width="1.5" PointX="11.75" PointY="12.125" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.SubdominioEquivalencia" Width="1.5" PointX="4.5" PointY="39.125" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TablaProcedencia" Width="1.5" PointX="5.25" PointY="34.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TecnologiaCicloVida" Width="1.5" PointX="9.75" PointY="28.875" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TecnologiaEquivalencia" Width="1.5" PointX="9.75" PointY="9.5" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TecnologiaVinculada" Width="1.5" PointX="11.375" PointY="35" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TipoAlerta" Width="1.5" PointX="14.75" PointY="14.375" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TipoArquetipo" Width="1.5" PointX="3" PointY="26.375" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TipoEquipo" Width="1.5" PointX="5.25" PointY="43.625" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TipoExperto" Width="1.5" PointX="18.75" PointY="8.625" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TipoParametro" Width="1.5" PointX="16.75" PointY="20.125" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Ambiente" Width="1.5" PointX="7" PointY="6" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.CodigoCIS" Width="1.5" PointX="18.75" PointY="4" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.CodigoCIS_Servidor" Width="1.5" PointX="21" PointY="2.375" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.CodigoCIS_ServidorNoRegistrado" Width="1.5" PointX="21" PointY="5.125" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Criticidad" Width="1.5" PointX="11.75" PointY="1.375" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.DominioServidor" Width="1.5" PointX="5.25" PointY="2.25" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.PeticionBigFix" Width="1.5" PointX="11.75" PointY="22.125" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.AplicacionConfiguracion" Width="1.5" PointX="16.25" PointY="5.125" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__AlertaPro__Alert__6CC31A31" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Alerta_TipoAlerta" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_AlertaDetalle_Alerta" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_AplicacionExperto_TipoExperto" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_TablaProcedencia_A" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_CodigoCIS_Servidor_CodigoCIS" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_CodigoCIS_ServidorNoRegistrado_CodigoCIS" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Servidor" Width="1.5" PointX="21.375" PointY="12.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TecnologiaNoRegistrada" Width="1.5" PointX="21.375" PointY="19.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.RoadMap" Width="1.5" PointX="11.75" PointY="5.5" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.HistoricoExclusion" Width="1.5" PointX="23.375" PointY="0.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TipoExclusion" Width="1.5" PointX="23.375" PointY="4.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.AuditoriaData" Width="1.5" PointX="23.375" PointY="8.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.VisitaSite" Width="1.5" PointX="23.375" PointY="13.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Mensaje" Width="1.5" PointX="16.625" PointY="24" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TipoMensaje" Width="1.5" PointX="14.375" PointY="24.375" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_TipoMensaje_A" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.RolServidor" Width="1.5" PointX="23.375" PointY="17.875" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.AplicacionPortafolioResponsables" Width="1.5" PointX="25.625" PointY="21.5" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.PortafolioResponsables" Width="1.5" PointX="23.375" PointY="21.75" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_AplicacionPortafolioResponsables_PortafolioResponsables" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.SolicitudComentarios" Width="1.5" PointX="18.5" PointY="0.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.SolicitudCampoModificado" Width="1.5" PointX="25.375" PointY="0.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.NotificacionResponsableAplicacion" Width="1.5" PointX="21.375" PointY="24.75" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_NotificacionResponsableAplicacion_PortafolioResponsables" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ParametroApp" Width="1.5" PointX="25.375" PointY="9.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ModuloAplicacion" Width="1.5" PointX="25.375" PointY="13.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.AplicacionDetalle" PointX="16.25" PointY="28.75" Width="1.5" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ConfiguracionColumnaModulo" Width="1.5" PointX="23.375" PointY="25.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.BaseUsuariosGrupo" Width="1.5" PointX="27.375" PointY="0.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TablaProcedenciaAplicacion" Width="1.5" PointX="27.375" PointY="3.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.BaseUsuarios" Width="1.5" PointX="0.75" PointY="14.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.EquipoCicloVida" Width="1.5" PointX="18.375" PointY="28.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Parametrica" Width="1.5" PointX="27.375" PointY="26.5" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ParametricaDetalle" Width="1.5" PointX="29.625" PointY="26" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.NotaAplicacion" Width="1.5" PointX="28.375" PointY="20.75" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_ParametricaDetalle_Parametrica" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.AuthAplicacion" Width="1.5" PointX="12.375" PointY="28.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ConfiguracionColumnaAplicacion" Width="1.5" PointX="7.25" PointY="12.875" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TipoActivoInformacion" Width="1.5" PointX="9.5" PointY="5.875" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Aplicacion" Width="1.5" PointX="14" PointY="0.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Tipo" Width="1.5" PointX="7.375" PointY="2" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Aplicacion_AD" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__Aplicacio__Aplic__1F83A428" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__Aplicacio__Criti__092A4EB5" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__Aplicacio__RoadM__0A1E72EE" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.AuditoriaAPI" Width="1.5" PointX="29.375" PointY="0.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Area" Width="1.5" PointX="32.25" PointY="31" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.AreaBian" Width="1.5" PointX="33.75" PointY="19.125" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ArquitectoTI" Width="1.5" PointX="36" PointY="26.125" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.AuditoriaTipoActivo" Width="1.5" PointX="0.75" PointY="30.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Bandeja" Width="1.5" PointX="29.75" PointY="7.875" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.BandejaAprobacion" Width="1.5" PointX="32" PointY="12.25" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.CuestionarioAplicacion" Width="1.5" PointX="23" PointY="35" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.CuestionarioAplicacionDetalle" Width="1.5" PointX="25.25" PointY="30.125" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.CuestionarioPae" Width="1.5" PointX="20.75" PointY="30.125" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Division" Width="1.5" PointX="30" PointY="31" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.DominioBian" Width="1.5" PointX="36" PointY="21.125" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ErrorCargaMasiva" Width="1.5" PointX="13.75" PointY="32.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Estandar" Width="1.5" PointX="2.75" PointY="33.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Gerencia" Width="1.5" PointX="27.75" PointY="31.25" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.InfoCampoPortafolio" Width="1.5" PointX="6" PointY="47.625" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.JefaturaAti" Width="1.5" PointX="33.75" PointY="26" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.NuevoCampoPortafolio" Width="1.5" PointX="34.75" PointY="10.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.PlataformaBcp" Width="1.5" PointX="36" PointY="17.25" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.PreguntaPae" Width="1.5" PointX="23" PointY="30" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ProcesoVital" Width="1.5" PointX="18.75" PointY="34.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ServidorAplicacion" Width="1.5" PointX="31.75" PointY="8.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.SolicitudAplicacion" Width="1.5" PointX="25.75" PointY="35.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.SolicitudAplicacionDetalle" Width="1.5" PointX="27.75" PointY="35.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.SolicitudAprobadores" Width="1.5" PointX="32" PointY="4" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TipoNotificacionApp" Width="1.5" PointX="37" PointY="0.875" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Unidad" Width="1.5" PointX="34.5" PointY="31.125" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.AplicacionCargaMasiva" Width="1.5" PointX="29.75" PointY="35.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.PortafolioBackup" Width="1.5" PointX="31.75" PointY="0.75" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Area_U" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Division_A" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_AreaBian_D" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_AreaBian_P" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_JefaturaAti_AT" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Bandeja_BA" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Bandeja_SA" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_InfoCampoPortafolio_CCA" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_CuestionarioAplicacion_CAD" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_PreguntaPae_CAD" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_CuestionarioPae_P" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Gerencia_D" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.AzureResourceType" Width="1.5" PointX="34.375" PointY="35.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ApplicationManager" Width="1.5" PointX="37.375" PointY="7.875" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ApplicationManagerCatalog" Width="1.5" PointX="39.625" PointY="7" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_ApplicationManagerCatalog_ApplicationManager" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ApplicationFlowData" Width="1.5" PointX="40.875" PointY="43.5" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.NotificacionApp" Width="1.5" PointX="39.25" PointY="1.125" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_AppNotificacion_TN" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.GestionadoPor" Width="1.5" PointX="37.375" PointY="12.125" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TeamSquad" Width="1.5" PointX="39.625" PointY="12" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_TeamSquad_GestionadoPor" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.RolOndemand" Width="1.5" PointX="13.375" PointY="36.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ClasificacionTecnica" Width="1.5" PointX="37.375" PointY="30.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.SubClasificacionTecnica" Width="1.5" PointX="37.375" PointY="34.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.GrupoRemedy" Width="1.5" PointX="0.75" PointY="38.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Relacion" Width="1.5" PointX="32.875" PointY="39.875" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.SolicitudArchivos" Width="1.5" PointX="38.375" PointY="17.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TribeLeader" Width="1.5" PointX="41.875" PointY="12.625" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_TribeLeader_TeamSquad" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ComentarioEliminacionRelacion" Width="1.5" PointX="35.125" PointY="53.125" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Relacion_CER" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Broker" Width="1.5" PointX="36.75" PointY="56.875" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Broker_Unidad" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ApplicationHistorico" Width="1.5" PointX="39.375" PointY="20.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.SolicitudCampos" Width="1.5" PointX="38.375" PointY="38.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.BitacoraAcciones" Width="1.5" PointX="40.375" PointY="16.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.InitialApplication" Width="1.5" PointX="12.375" PointY="40.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.InitialApplicationManagerCatalog" Width="1.5" PointX="7.375" PointY="39.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.UrlAplicacion" Width="1.5" PointX="43.625" PointY="20" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.UrlAplicacionEquipo" Width="1.5" PointX="45.875" PointY="20.5" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.UrlFuente" Width="1.5" PointX="41.375" PointY="20.625" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_UrlAplicacion_U" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_UrlFuente_U" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.BCP_CATG_GH_UNIDADES" Width="1.5" PointX="20.375" PointY="41.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ApplicationCargaMasiva" Width="1.5" PointX="22.375" PointY="41.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Motivo" Width="1.5" PointX="41.375" PointY="24.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TecnologiaAplicacion" Width="1.5" PointX="40.375" PointY="36.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.HistorialModificacion" Width="1.5" PointX="42.375" PointY="4.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Application" Width="1.5" PointX="36.375" PointY="60.625" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Consultas" Width="1.5" PointX="0.75" PointY="41.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ApplicationFlow" Width="1.5" PointX="38.625" PointY="64.375" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_ApplicationFlow_Application" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_ApplicationFlowData_ApplicationFlow" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ApplicationFile" Width="1.5" PointX="5.375" PointY="11.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TipoCicloVida" Width="1.5" PointX="41.375" PointY="1" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Solicitud" Width="1.5" PointX="35.375" PointY="39.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Guardicore" Width="1.5" PointX="41.375" PointY="32.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ApplicationPCI" Width="1.5" PointX="18.375" PointY="38.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TipoPCI" Width="1.5" PointX="42.375" PointY="8.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Equipo" Width="1.5" PointX="30.625" PointY="17.125" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__Equipo__TablaPro__3414ACBA" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__Equipo__TipoEqui__3508D0F3" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__EquipoTec__Equip__38D961D7" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__Relacion__Equipo__39CD8610" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Equipo_Ambiente" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Equipo_DominioServidor" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Equipo_RolServidor" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_EquipoConfiguracion_Equipo" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.CodigoReservado" Width="1.5" PointX="37.375" PointY="42.75" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_EquipoCicloVida_Equipo" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Subdominio" Width="1.5" PointX="5.25" PointY="53.75" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Subdominio_SE" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Dominio" Width="1.5" PointX="3" PointY="42.75" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Cluster_D" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Dominio_S" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.GuardicoreLabels" Width="1.5" PointX="3.375" PointY="19.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.GuardicoreAssets" Width="1.5" PointX="43.375" PointY="0.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.GuardicoreEtiquetadoEquipos" Width="1.5" PointX="9.375" PointY="43.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.SolicitudRolFuncion" Width="1.5" PointX="43.375" PointY="24.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.SolRolFuncionCabecera" Width="1.5" PointX="43.375" PointY="28.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.SolRolFuncionHistorial" Width="1.5" PointX="43.375" PointY="32.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.SolicitudRelacionFuncion" Width="1.5" PointX="43.375" PointY="41.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.SolicitudRelacionFuncionDetalle" Width="1.5" PointX="44.375" PointY="4.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ChapterFuncionesRoles" Width="1.5" PointX="42.375" PointY="36.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.RolesProducto" Width="1.5" PointX="9.375" PointY="43.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Arquetipo" Width="1.5" PointX="3.75" PointY="21.25" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ArquetipoTecnologia" Width="1.5" PointX="8.25" PointY="22.25" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Producto" Width="1.5" PointX="0.75" PointY="20.125" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ProductoArquetipo" Width="1.5" PointX="10.5" PointY="15.375" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.Tecnologia" Width="1.5" PointX="6" PointY="14.375" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TecnologiaArquetipo" Width="1.5" PointX="12.875" PointY="20.75" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__Tecnologi__Arque__3AC1AA49" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Arquetipo_AT" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Arquetipo_Entorno" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Arquetipo_TipoArquetipo" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Tecnologia_AT" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_AutorizadorTecnologia_AutoTec" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__ServidorT__Tecno__5F3414E9" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__Excepcion__Tecno__673F4B05" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Familia_T" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__ProductoA__Produ__0F431ABE" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__Tecnologi__Produ__19018F22" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Subdominio_T" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__Tecnologi__Tecno__7B4643B2" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__Tecnologi__Vincu__7C3A67EB" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_TecnologiaCicloVida_Tecnologia" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_TecnologiaEquivalencia_Tecnologia" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_Tipo_T" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ConfiguracionTecnologiaCampos" Width="1.5" PointX="27.375" PointY="11.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.SolicitudTecnologia" Width="1.5" PointX="27.375" PointY="15.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.SolicitudTecnologiaCampos" Width="1.5" PointX="44.375" PointY="10.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.SolicitudTecnologiaFlujo" Width="1.5" PointX="44.375" PointY="14.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ProductoManagerRoles" Width="1.5" PointX="3" PointY="15.125" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__ProductoManagerRoles__Producto__3AC1AA49" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.ProductoManager" Width="1.5" PointX="34.375" PointY="14.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.TecnologiaDetalleMaestra" Width="1.5" PointX="45.375" PointY="0.75" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.RolesProductoAmbiente" Width="1.5" PointX="11.625" PointY="56.375" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK__RolesProd__Roles__3C6C5D9E" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.EquipoSoftwareBase" Width="1.5" PointX="45.875" PointY="30.875" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_EquipoSoftwareBase_Equipo" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_EquipoSoftwareBase_Subdominio" />
+        <EntityTypeShape EntityType="GestionCMDB_ProdModel.EquipoSolicitud" Width="1.5" PointX="32.875" PointY="46.625" />
+        <AssociationConnector Association="GestionCMDB_ProdModel.FK_EquipoSolicitud_Equipo" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
